@@ -48,31 +48,39 @@ input_data = {
 }
 
 prompt = f"""
-You are an AI-powered **Smart Menu Generator** designed to optimize a restaurant's menu for **{input_data['target_month']} {input_data['target_year']}** while considering:
-- **Reducing food waste**: Prioritize "high-risk" ingredients nearing spoilage.
-- **Profit optimization**: Adjust normal dish prices based on demand & historical sales data.
-- **Dynamic pricing**:
-  - **Special dishes (high-risk ingredients)**: Apply **10-30% discount** based on perishability & sales trends.
-  - **Normal dishes (high-demand ingredients)**: Adjust prices **based on past sales and profit margins**.
+You are an AI-powered **Smart Menu Generator** designed to optimize a restaurant's menu for **{input_data['target_month']} {input_data['target_year']}** by using **only the available ingredients** while considering:  
 
-### **Dataset Information (Menu Items & Sales Data)**
-{json.dumps(input_data, indent=4)}
+- **Reducing Food Waste**: Prioritize "high-risk" ingredients nearing spoilage to create new dishes.  
+- **Ingredient Constraints**: Use only the limited ingredients available in stock (no external items).  
+- **Menu Expansion**: Innovate new dishes using available ingredients while ensuring variety.  
+- **Profit Optimization**: Adjust dish prices based on demand, historical sales, and profit margins.  
+- **Dynamic Pricing Strategy**:  
+  - **Special Dishes (using high-risk ingredients)**: Apply **10-30% discounts** based on perishability & sales trends.  
+  - **Normal Dishes (using high-demand ingredients)**: Adjust pricing **based on past sales and profit margins**.  
 
-### **Return JSON Output ONLY (No Explanations)**
-Ensure the JSON output is **correctly formatted**.
+### **Dataset Information (Available Ingredients & Sales Data)**  
+{json.dumps(input_data, indent=4)}  
 
+### **Return JSON Output ONLY (No Explanations)**  
+Ensure the JSON output is **correctly formatted**.  
+
+```json
 {{
     "month": "{input_data['target_month']}",
-    "year": {input_data['target_year']},
+    "year": {input_data['target_year']}",
     "menu": {{
         "special_dishes": [
-            {{"name": "Dish Name", "ingredients": ["ingredient1", "ingredient2"], "price": 5.99, "discount": "20%", "description": "An innovative dish created using soon-to-expire ingredients."}}
+            {{"name": "New Dish Name", "ingredients": ["ingredient1", "ingredient2"], "price": 5.99, "discount": "20%", "description": "A creative dish made from soon-to-expire ingredients."}}
         ],
         "normal_dishes": [
-            {{"name": "Dish Name", "ingredients": ["ingredient1", "ingredient2"], "price": 8.99, "description": "A high-demand dish adjusted for profit optimization."}}
+            {{"name": "Existing Dish Name", "ingredients": ["ingredient1", "ingredient2"], "price": 8.99, "description": "A high-demand dish adjusted for profit optimization."}}
+        ],
+        "new_dishes": [
+            {{"name": "Newly Created Dish", "ingredients": ["ingredient1", "ingredient2", "ingredient3"], "price": 7.49, "description": "A unique dish made using available ingredients."}}
         ]
     }}
 }}
+
 """
 
 # Generate menu using Gemini

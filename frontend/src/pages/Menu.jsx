@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Menu = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [menuData, setMenuData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Get current month and year
+  const currentDate = new Date();
+  const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
+  const currentYear = currentDate.getFullYear();
 
   const generateMenu = async () => {
     try {
@@ -28,6 +35,17 @@ const Menu = () => {
     }
   };
 
+  // Helper function to format price
+  const formatPrice = (price) => {
+    return (price / 100).toFixed(2);
+  };
+
+  // Helper function to calculate original price with discount
+  const calculateOriginalPrice = (price, discount) => {
+    const discountPercentage = parseInt(discount) / 100;
+    return formatPrice(price / (1 - discountPercentage));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -41,21 +59,45 @@ const Menu = () => {
           </p>
         </div>
 
-        {/* Generate Button */}
+        {/* Generate/Back Button */}
         <div className="text-center mb-8">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={generateMenu}
-            disabled={loading}
-            className={`px-8 py-4 rounded-lg text-lg font-semibold text-white 
-              ${loading 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-green-600 hover:bg-green-700'
-              } transition-colors duration-200`}
-          >
-            {loading ? 'Generating Menu...' : 'Generate Optimized Menu'}
-          </motion.button>
+          {menuData ? (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/')}
+              className="px-8 py-4 rounded-lg text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center mx-auto"
+            >
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              Back to Home
+            </motion.button>
+          ) : (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={generateMenu}
+              disabled={loading}
+              className={`px-8 py-4 rounded-lg text-lg font-semibold text-white 
+                ${loading 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-green-600 hover:bg-green-700'
+                } transition-colors duration-200`}
+            >
+              {loading ? 'Generating Menu...' : 'Generate Optimized Menu'}
+            </motion.button>
+          )}
         </div>
 
         {/* Error Message */}
@@ -116,16 +158,21 @@ const Menu = () => {
                             key={idx}
                             className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs rounded-full"
                           >
-                            {ingredient}
+                            {ingredient.name} ({ingredient.quantity}g)
                           </span>
                         ))}
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                          ${dish.price.toFixed(2)}
-                        </span>
+                        <div>
+                          <span className="text-lg font-bold text-green-600 dark:text-green-400">
+                            ${formatPrice(dish.price)}
+                          </span>
+                          <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
+                            Original: ${calculateOriginalPrice(dish.price, dish.discount)}
+                          </span>
+                        </div>
                         <span className="text-sm text-gray-500 dark:text-gray-400">
-                          Original: ${(dish.price / (1 - parseInt(dish.discount) / 100)).toFixed(2)}
+                          Profit: {dish.profit_margin}%
                         </span>
                       </div>
                     </motion.div>
@@ -164,13 +211,16 @@ const Menu = () => {
                             key={idx}
                             className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded-full"
                           >
-                            {ingredient}
+                            {ingredient.name} ({ingredient.quantity}g)
                           </span>
                         ))}
                       </div>
-                      <div className="flex justify-end">
+                      <div className="flex justify-between items-center">
                         <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                          ${dish.price.toFixed(2)}
+                          ${formatPrice(dish.price)}
+                        </span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          Profit: {dish.profit_margin}%
                         </span>
                       </div>
                     </motion.div>
@@ -178,7 +228,57 @@ const Menu = () => {
                 </div>
               </div>
             </div>
-        </motion.div>
+
+            {/* New Dishes Section */}
+            <div className="mt-8">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    New Dishes
+                  </h2>
+                  <span className="text-sm text-purple-600 dark:text-purple-400 font-semibold">
+                    Fresh Innovations
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {menuData.menu.new_dishes.map((dish, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
+                    >
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                        {dish.name}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-300 mb-3">
+                        {dish.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {dish.ingredients.map((ingredient, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full"
+                          >
+                            {ingredient.name} ({ingredient.quantity}g)
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-bold text-green-600 dark:text-green-400">
+                          ${formatPrice(dish.price)}
+                        </span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          Profit: {dish.profit_margin}%
+                        </span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
         )}
 
         {/* Loading State */}

@@ -4,44 +4,45 @@
     "menu": {
         "special_dishes": [
             {
-                "name": "Apple & Okra Fritters",
+                "name": "Apple & Banana Crumble",
                 "ingredients": [
                     "apple",
-                    "okra"
-                ],
-                "price": 7.99,
-                "discount": "25%",
-                "description": "Crispy fritters made with fresh apples and okra, offering a unique flavor combination while reducing food waste."
-            },
-            {
-                "name": "Banana & Orange Smoothie",
-                "ingredients": [
-                    "banana",
-                    "oranges"
+                    "banana"
                 ],
                 "price": 4.99,
-                "discount": "30%",
-                "description": "A refreshing smoothie blending ripe bananas and oranges, perfect for a quick and healthy breakfast or snack, made to reduce food waste."
+                "discount": "25%",
+                "description": "Warm apple and banana crumble, perfect for a winter dessert."
             },
             {
-                "name": "Cucumber & Tomato Salad",
+                "name": "Cucumber & Tomato Salad with Okra Fritters",
                 "ingredients": [
                     "cucumber",
-                    "tomato"
-                ],
-                "price": 6.49,
-                "discount": "20%",
-                "description": "A light and refreshing salad featuring fresh cucumbers and ripe tomatoes, dressed with a light vinaigrette to minimise waste."
-            },
-            {
-                "name": "Spiced Apple and Patato Soup",
-                "ingredients": [
-                    "apple",
-                    "patato"
+                    "tomato",
+                    "okra"
                 ],
                 "price": 6.99,
+                "discount": "15%",
+                "description": "Refreshing salad with crispy okra fritters, a light and flavorful option."
+            },
+            {
+                "name": "Orange & Okra Stir Fry",
+                "ingredients": [
+                    "oranges",
+                    "okra"
+                ],
+                "price": 7.49,
                 "discount": "20%",
-                "description": "A savory soup combining apples and potatoes with warm spices, designed to utilize high-risk ingredients."
+                "description": "A sweet and savory stir fry that combines the zest of oranges with the unique texture of okra. Served with potatoes."
+            },
+            {
+                "name": "Spiced Patato & Tomato Soup",
+                "ingredients": [
+                    "patato",
+                    "tomato"
+                ],
+                "price": 5.49,
+                "discount": "10%",
+                "description": "A comforting and hearty soup, perfect for a cold January day."
             }
         ],
         "normal_dishes": [
@@ -50,40 +51,47 @@
                 "ingredients": [
                     "patato"
                 ],
-                "price": 4.49,
-                "description": "Crispy, golden-brown potato fries, a classic side dish."
+                "price": 3.99,
+                "description": "Golden and crispy patato fries, a timeless favorite."
             },
             {
-                "name": "Tomato Soup",
+                "name": "Tomato & Cucumber Sandwich",
                 "ingredients": [
-                    "tomato"
+                    "tomato",
+                    "cucumber"
                 ],
                 "price": 5.99,
-                "description": "A comforting and flavorful tomato soup, perfect as a starter or light meal."
+                "description": "A simple yet satisfying sandwich with fresh tomato and cucumber."
             },
             {
-                "name": "Orange Juice",
+                "name": "Fresh Orange Juice",
                 "ingredients": [
                     "oranges"
                 ],
-                "price": 3.99,
-                "description": "Freshly squeezed orange juice, a refreshing and healthy beverage."
+                "price": 2.99,
+                "description": "Naturally squeezed orange juice"
+            }
+        ],
+        "new_dishes": [
+            {
+                "name": "Banana & Patato Mash with Orange Zest",
+                "ingredients": [
+                    "banana",
+                    "patato",
+                    "oranges"
+                ],
+                "price": 6.49,
+                "description": "A creamy and flavorful mash with a hint of citrus."
             },
             {
-                "name": "Apple Pie",
+                "name": "Apple, Cucumber & Okra Relish",
                 "ingredients": [
-                    "apple"
+                    "apple",
+                    "cucumber",
+                    "okra"
                 ],
-                "price": 8.99,
-                "description": "A classic apple pie with a flaky crust and sweet apple filling."
-            },
-            {
-                "name": "Banana Bread",
-                "ingredients": [
-                    "banana"
-                ],
-                "price": 7.49,
-                "description": "Moist and delicious banana bread, perfect for breakfast or a snack."
+                "price": 4.49,
+                "description": "A tangy and refreshing relish, perfect as a side or topping."
             }
         ]
     }
