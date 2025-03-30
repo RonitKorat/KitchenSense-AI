@@ -13,6 +13,7 @@ import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import Menu from './pages/Menu';
 import WasteAnalysis from './pages/WasteAnalysis';
+import SpecialFeatures from './pages/SpecialFeatures';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/menu" element={<Menu />} />
               <Route path="/waste-analysis" element={<WasteAnalysis />} />
+              <Route path="/special-features" element={<SpecialFeatures />} />
             </Routes>
           </main>
         </div>

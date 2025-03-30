@@ -4,92 +4,86 @@
     "menu": {
         "special_dishes": [
             {
-                "name": "Apple Crumble Delight",
+                "name": "Apple & Okra Fritters",
                 "ingredients": [
                     "apple",
-                    "flour",
-                    "sugar",
-                    "butter"
+                    "okra"
                 ],
-                "price": 6.99,
+                "price": 7.99,
                 "discount": "25%",
-                "description": "A warm and comforting dessert featuring fresh apples, perfect for a chilly January evening."
+                "description": "Crispy fritters made with fresh apples and okra, offering a unique flavor combination while reducing food waste."
             },
             {
-                "name": "Banana Nut Bread Pudding",
+                "name": "Banana & Orange Smoothie",
                 "ingredients": [
                     "banana",
-                    "bread",
-                    "milk",
-                    "eggs",
-                    "nuts"
-                ],
-                "price": 5.49,
-                "discount": "20%",
-                "description": "A delightful twist on classic bread pudding, infused with the sweetness of ripe bananas."
-            },
-            {
-                "name": "Cucumber and Tomato Salad",
-                "ingredients": [
-                    "cucumber",
-                    "tomato",
-                    "onion",
-                    "vinegar",
-                    "olive oil"
+                    "oranges"
                 ],
                 "price": 4.99,
-                "discount": "15%",
-                "description": "A refreshing and light salad, perfect as a starter or side dish, highlighting the crispness of cucumber and tomato."
-            },
-            {
-                "name": "Okra and Tomato Stew",
-                "ingredients": [
-                    "okra",
-                    "tomato",
-                    "onion",
-                    "garlic",
-                    "spices"
-                ],
-                "price": 7.49,
-                "discount": "10%",
-                "description": "A hearty and flavorful stew, combining the unique texture of okra with the savory sweetness of tomato."
-            },
-            {
-                "name": "Orange and Apple Smoothie",
-                "ingredients": [
-                    "oranges",
-                    "apple",
-                    "yogurt",
-                    "honey"
-                ],
-                "price": 4.49,
                 "discount": "30%",
-                "description": "A refreshing and vitamin-packed smoothie, blending the sweetness of oranges and apples for a healthy treat."
+                "description": "A refreshing smoothie blending ripe bananas and oranges, perfect for a quick and healthy breakfast or snack, made to reduce food waste."
+            },
+            {
+                "name": "Cucumber & Tomato Salad",
+                "ingredients": [
+                    "cucumber",
+                    "tomato"
+                ],
+                "price": 6.49,
+                "discount": "20%",
+                "description": "A light and refreshing salad featuring fresh cucumbers and ripe tomatoes, dressed with a light vinaigrette to minimise waste."
+            },
+            {
+                "name": "Spiced Apple and Patato Soup",
+                "ingredients": [
+                    "apple",
+                    "patato"
+                ],
+                "price": 6.99,
+                "discount": "20%",
+                "description": "A savory soup combining apples and potatoes with warm spices, designed to utilize high-risk ingredients."
             }
         ],
         "normal_dishes": [
             {
-                "name": "Potato and Leek Soup",
+                "name": "Classic Patato Fries",
                 "ingredients": [
-                    "patato",
-                    "leek",
-                    "vegetable broth",
-                    "cream"
+                    "patato"
                 ],
-                "price": 7.99,
-                "description": "A classic creamy soup, perfect for warming up on a cold winter day."
+                "price": 4.49,
+                "description": "Crispy, golden-brown potato fries, a classic side dish."
             },
             {
-                "name": "Tomato Bruschetta",
+                "name": "Tomato Soup",
                 "ingredients": [
-                    "tomato",
-                    "basil",
-                    "garlic",
-                    "bread",
-                    "olive oil"
+                    "tomato"
                 ],
-                "price": 9.99,
-                "description": "Toasted bread topped with diced tomatoes, fresh basil, and garlic."
+                "price": 5.99,
+                "description": "A comforting and flavorful tomato soup, perfect as a starter or light meal."
+            },
+            {
+                "name": "Orange Juice",
+                "ingredients": [
+                    "oranges"
+                ],
+                "price": 3.99,
+                "description": "Freshly squeezed orange juice, a refreshing and healthy beverage."
+            },
+            {
+                "name": "Apple Pie",
+                "ingredients": [
+                    "apple"
+                ],
+                "price": 8.99,
+                "description": "A classic apple pie with a flaky crust and sweet apple filling."
+            },
+            {
+                "name": "Banana Bread",
+                "ingredients": [
+                    "banana"
+                ],
+                "price": 7.49,
+                "description": "Moist and delicious banana bread, perfect for breakfast or a snack."
             }
         ]
     }

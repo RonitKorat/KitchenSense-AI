@@ -75,6 +75,35 @@ const Home = () => {
             >
               Sign In
             </Link>
+            <Link
+              to="/special-features"
+              className="relative bg-purple-600 text-white px-8 py-3 rounded-full hover:bg-purple-700 transition-colors duration-200 overflow-hidden group"
+            >
+              <span className="relative z-10">Special Features</span>
+              <motion.div
+                className="absolute inset-0 bg-white/20"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 0.8, 0.5],
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-purple-400/0 via-purple-400/20 to-purple-400/0"
+                animate={{
+                  x: ['-100%', '100%'],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
+            </Link>
           </motion.div>
         </div>
       </section>

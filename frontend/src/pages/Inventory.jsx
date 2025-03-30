@@ -9,7 +9,12 @@ const Inventory = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [showData, setShowData] = useState(false);
   const [processedImages, setProcessedImages] = useState([]);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [detectedItems, setDetectedItems] = useState([]);
+  const [cameraError, setCameraError] = useState(null);
   const fileInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -79,6 +84,146 @@ const Inventory = () => {
     setShowData(true);
   };
 
+  const startCamera = async () => {
+    try {
+      // First check if the browser supports getUserMedia
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Your browser does not support camera access');
+      }
+
+      // Request camera permissions with specific constraints
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
+      });
+
+      // Check if we have a video element
+      if (!videoRef.current) {
+        throw new Error('Video element not found');
+      }
+
+      // Set the video source and store the stream
+      videoRef.current.srcObject = stream;
+      streamRef.current = stream;
+      setIsCameraActive(true);
+      setCameraError(null);
+
+      // Add event listener for video loading
+      videoRef.current.onloadedmetadata = () => {
+        videoRef.current.play().catch(err => {
+          console.error('Error playing video:', err);
+          setCameraError('Error starting video feed. Please try again.');
+        });
+      };
+
+    } catch (err) {
+      console.error('Camera error:', err);
+      let errorMessage = 'Unable to access camera. ';
+      
+      if (err.name === 'NotAllowedError') {
+        errorMessage += 'Please grant camera permissions in your browser settings.';
+      } else if (err.name === 'NotFoundError') {
+        errorMessage += 'No camera device found.';
+      } else if (err.name === 'NotReadableError') {
+        errorMessage += 'Camera is in use by another application.';
+      } else {
+        errorMessage += err.message || 'Please try again.';
+      }
+      
+      setCameraError(errorMessage);
+      setIsCameraActive(false);
+    }
+  };
+
+  const stopCamera = () => {
+    try {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => {
+          track.stop();
+        });
+        streamRef.current = null;
+      }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+      setIsCameraActive(false);
+      setCameraError(null);
+    } catch (err) {
+      console.error('Error stopping camera:', err);
+      setCameraError('Error stopping camera. Please refresh the page.');
+    }
+  };
+
+  // Add cleanup on component unmount
+  React.useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
+  const captureImage = () => {
+    if (!videoRef.current) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    const ctx = canvas.getContext('2d');
+
+    // Flip the context horizontally
+    ctx.scale(-1, 1);
+    ctx.drawImage(videoRef.current, -canvas.width, 0, canvas.width, canvas.height);
+
+    const imageData = canvas.toDataURL('image/jpeg');
+    const capturedFile = dataURLtoFile(imageData, 'camera-capture.jpg');
+    
+    // Add the captured image to the images array
+    const newImage = {
+      file: capturedFile,
+      preview: imageData,
+      dimensions: {
+        width: videoRef.current.videoWidth,
+        height: videoRef.current.videoHeight
+      }
+    };
+    
+    setImages(prev => [...prev, newImage]);
+    
+    // Simulate detection results (replace with actual API call later)
+    const mockDetectedItems = [
+      {
+        name: 'Tomato',
+        confidence: 95,
+        quantity: 12,
+        unit: 'pieces',
+        status: 'Good'
+      },
+      {
+        name: 'Lettuce',
+        confidence: 88,
+        quantity: 5,
+        unit: 'heads',
+        status: 'Medium'
+      }
+    ];
+    
+    setDetectedItems(mockDetectedItems);
+  };
+
+  const dataURLtoFile = (dataurl, filename) => {
+    let arr = dataurl.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), 
+        n = bstr.length, 
+        u8arr = new Uint8Array(n);
+    while(n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -88,76 +233,147 @@ const Inventory = () => {
           className="text-center mb-8"
         >
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Inventory Management
+            AI-Powered Inventory Management
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300">
-            Upload and manage your inventory images
+            Track and manage your inventory with real-time AI detection
           </p>
         </motion.div>
 
-        {/* Enhanced Image Upload Section */}
-        {!showData && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-8 mb-8 transform hover:scale-[1.02] transition-all duration-300">
-            <div
-              className={`relative border-2 border-dashed rounded-lg p-8 transition-all duration-300 ${
-                isDragging
-                  ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                  : 'border-gray-300 dark:border-gray-600 hover:border-green-500'
-              }`}
-              onDragEnter={handleDragEnter}
-              onDragLeave={handleDragLeave}
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-            >
-              <div className="space-y-6">
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
-                    <svg
-                      className="w-8 h-8 text-green-600 dark:text-green-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
+        {/* Real-Time Stock Detection Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 mb-8"
+        >
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Real-Time Stock Detection
+          </h2>
+          
+          <div className="w-full max-w-2xl mx-auto">
+            {/* Camera Feed */}
+            <div className="relative">
+              <div className="aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden h-[300px]">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className={`w-full h-full object-cover transform scale-x-[-1] ${!isCameraActive ? 'hidden' : ''}`}
+                />
+                {!isCameraActive && (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <p className="text-gray-500 dark:text-gray-400">Camera feed will appear here</p>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    Upload Your Images
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                    Drag and drop your images here, or click to select files
-                  </p>
-                  <div className="flex space-x-4">
-                    <label
-                      htmlFor="file-upload"
-                      className="relative cursor-pointer bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                    >
-                      <span>Choose Files</span>
-                      <input
-                        id="file-upload"
-                        name="file-upload"
-                        type="file"
-                        ref={fileInputRef}
-                        className="hidden"
-                        accept="image/*"
-                        multiple
-                        onChange={handleFileInput}
-                      />
-                    </label>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Supports: PNG, JPG, GIF
-                    </div>
+                )}
+              </div>
+              
+              <div className="mt-4 flex justify-center space-x-4">
+                <button
+                  onClick={startCamera}
+                  disabled={isCameraActive}
+                  className={`px-4 py-2 rounded-lg text-white font-medium ${
+                    isCameraActive 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-green-600 hover:bg-green-700'
+                  } transition-colors duration-200`}
+                >
+                  Start Camera
+                </button>
+                <button
+                  onClick={stopCamera}
+                  disabled={!isCameraActive}
+                  className={`px-4 py-2 rounded-lg text-white font-medium ${
+                    !isCameraActive 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-red-600 hover:bg-red-700'
+                  } transition-colors duration-200`}
+                >
+                  Stop Camera
+                </button>
+                <button
+                  onClick={captureImage}
+                  disabled={!isCameraActive}
+                  className={`px-4 py-2 rounded-lg text-white font-medium ${
+                    !isCameraActive 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-blue-600 hover:bg-blue-700'
+                  } transition-colors duration-200`}
+                >
+                  Capture Image
+                </button>
+              </div>
+
+              {cameraError && (
+                <p className="mt-2 text-red-600 dark:text-red-400 text-sm">
+                  {cameraError}
+                </p>
+              )}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Upload Section */}
+        <div className="mb-8">
+          <div
+            className={`border-2 border-dashed rounded-lg p-8 text-center ${
+              isDragging
+                ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                : 'border-gray-300 dark:border-gray-600'
+            }`}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            <div className="space-y-6">
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
+                  <svg
+                    className="w-8 h-8 text-green-600 dark:text-green-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  Upload Your Images
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  Drag and drop your images here, or click to select files
+                </p>
+                <div className="flex space-x-4">
+                  <label
+                    htmlFor="file-upload"
+                    className="relative cursor-pointer bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  >
+                    <span>Choose Files</span>
+                    <input
+                      id="file-upload"
+                      name="file-upload"
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept="image/*"
+                      multiple
+                      onChange={handleFileInput}
+                    />
+                  </label>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Supports: PNG, JPG, GIF
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         {/* Process/Back Button */}
         {images.length > 0 && (
