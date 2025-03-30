@@ -228,6 +228,13 @@ const Navbar = () => {
               >
                 Dashboard
               </Link>
+              <Link
+                to="/waste-analysis"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                Waste Analysis
+              </Link>
               <button
                 onClick={() => {
                   handleLogout();

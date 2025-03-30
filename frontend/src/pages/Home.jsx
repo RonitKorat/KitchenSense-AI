@@ -31,14 +31,14 @@ const Home = () => {
       name: 'Waste Prediction',
       description: 'Predict and prevent food spoilage',
       icon: ChartPieIcon,
-      path: '/waste-management'
+      path: '/waste-analysis'
     },
   ];
 
   return (
-    <div className="pt-16">
+    <div className="pt-1">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+      <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}

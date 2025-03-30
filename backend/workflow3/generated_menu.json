@@ -7,106 +7,89 @@
                 "name": "Apple Crumble Delight",
                 "ingredients": [
                     "apple",
-                    "cinnamon",
-                    "oats"
+                    "flour",
+                    "sugar",
+                    "butter"
                 ],
                 "price": 6.99,
                 "discount": "25%",
-                "description": "A warm and comforting dessert featuring fresh apples, perfect for a winter treat."
+                "description": "A warm and comforting dessert featuring fresh apples, perfect for a chilly January evening."
             },
             {
                 "name": "Banana Nut Bread Pudding",
                 "ingredients": [
                     "banana",
-                    "walnuts",
-                    "bread"
+                    "bread",
+                    "milk",
+                    "eggs",
+                    "nuts"
                 ],
                 "price": 5.49,
                 "discount": "20%",
-                "description": "A sweet and satisfying bread pudding made with ripe bananas and crunchy walnuts."
+                "description": "A delightful twist on classic bread pudding, infused with the sweetness of ripe bananas."
             },
             {
                 "name": "Cucumber and Tomato Salad",
                 "ingredients": [
                     "cucumber",
                     "tomato",
-                    "feta cheese",
-                    "olives"
+                    "onion",
+                    "vinegar",
+                    "olive oil"
                 ],
-                "price": 7.99,
+                "price": 4.99,
                 "discount": "15%",
-                "description": "A refreshing salad with crisp cucumbers and juicy tomatoes, perfect as a light appetizer."
+                "description": "A refreshing and light salad, perfect as a starter or side dish, highlighting the crispness of cucumber and tomato."
             },
             {
                 "name": "Okra and Tomato Stew",
                 "ingredients": [
                     "okra",
                     "tomato",
-                    "onions",
+                    "onion",
+                    "garlic",
                     "spices"
                 ],
-                "price": 8.49,
-                "discount": "20%",
-                "description": "A flavorful and hearty stew featuring okra and tomatoes, a comforting dish for chilly evenings."
+                "price": 7.49,
+                "discount": "10%",
+                "description": "A hearty and flavorful stew, combining the unique texture of okra with the savory sweetness of tomato."
             },
             {
-                "name": "Orange Glazed Chicken",
+                "name": "Orange and Apple Smoothie",
                 "ingredients": [
                     "oranges",
-                    "chicken",
-                    "soy sauce",
-                    "ginger"
+                    "apple",
+                    "yogurt",
+                    "honey"
                 ],
-                "price": 12.99,
-                "discount": "10%",
-                "description": "Tender chicken glazed with a sweet and tangy orange sauce, a delightful main course."
-            },
-            {
-                "name": "Patato and Cheese Frittata",
-                "ingredients": [
-                    "patato",
-                    "cheese",
-                    "eggs",
-                    "onions"
-                ],
-                "price": 9.99,
-                "discount": "15%",
-                "description": "A hearty and satisfying frittata with potatoes and cheese, perfect for breakfast or brunch."
+                "price": 4.49,
+                "discount": "30%",
+                "description": "A refreshing and vitamin-packed smoothie, blending the sweetness of oranges and apples for a healthy treat."
             }
         ],
         "normal_dishes": [
             {
-                "name": "Classic Burger",
+                "name": "Potato and Leek Soup",
                 "ingredients": [
-                    "beef patty",
-                    "lettuce",
+                    "patato",
+                    "leek",
+                    "vegetable broth",
+                    "cream"
+                ],
+                "price": 7.99,
+                "description": "A classic creamy soup, perfect for warming up on a cold winter day."
+            },
+            {
+                "name": "Tomato Bruschetta",
+                "ingredients": [
                     "tomato",
-                    "cheese",
-                    "bun"
+                    "basil",
+                    "garlic",
+                    "bread",
+                    "olive oil"
                 ],
                 "price": 9.99,
-                "description": "A timeless favorite, our classic burger is made with a juicy beef patty and all the fixings."
-            },
-            {
-                "name": "Pasta Carbonara",
-                "ingredients": [
-                    "spaghetti",
-                    "pancetta",
-                    "eggs",
-                    "parmesan cheese"
-                ],
-                "price": 14.99,
-                "description": "A rich and creamy pasta dish made with pancetta, eggs, and parmesan cheese."
-            },
-            {
-                "name": "Grilled Salmon",
-                "ingredients": [
-                    "salmon",
-                    "lemon",
-                    "asparagus"
-                ],
-                "price": 18.99,
-                "description": "A healthy and delicious grilled salmon served with a side of asparagus and a lemon wedge."
+                "description": "Toasted bread topped with diced tomatoes, fresh basil, and garlic."
             }
         ]
     }

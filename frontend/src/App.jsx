@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -11,12 +12,14 @@ import Orders from './pages/Orders';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import Menu from './pages/Menu';
+import WasteAnalysis from './pages/WasteAnalysis';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+          <ScrollToTop />
           <Navbar />
           <main className="pt-16">
             <Routes>
@@ -29,6 +32,7 @@ function App() {
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/menu" element={<Menu />} />
+              <Route path="/waste-analysis" element={<WasteAnalysis />} />
             </Routes>
           </main>
         </div>
