@@ -27,27 +27,40 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
+      console.log('Sending signup request with data:', {
+        name: formData.name,
+        email: formData.email,
+        restaurant_name: formData.restaurantName,
+        password: formData.password
       });
 
+      const response = await fetch('http://localhost:5000/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          restaurant_name: formData.restaurantName,
+          password: formData.password
+        })
+      });
+
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Signup failed');
+        throw new Error(data.error || 'Signup failed');
       }
 
-      // Use the login function from AuthContext
-      login(data.user, data.token);
-
-      // Redirect to dashboard
-      navigate('/dashboard');
+      // Redirect to login page after successful signup
+      navigate('/login');
     } catch (err) {
-      setError(err.message || 'An error occurred during signup');
+      console.error('Signup error:', err);
+      setError(err.message || 'An error occurred during signup. Please check if the backend server is running.');
     } finally {
       setLoading(false);
     }

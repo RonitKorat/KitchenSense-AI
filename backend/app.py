@@ -1,96 +1,38 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
+from flask_pymongo import PyMongo
 from flask_cors import CORS
-import json
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Enable CORS for all routes
 
-# Mock data for demonstration
-inventory_data = {
-    "items": [
-        {"id": 1, "name": "Tomatoes", "quantity": 50, "unit": "kg", "expiry_date": "2024-03-30"},
-        {"id": 2, "name": "Chicken", "quantity": 20, "unit": "kg", "expiry_date": "2024-03-29"},
-    ]
-}
+# MongoDB configuration
+app.config["MONGO_URI"] = "mongodb+srv://22BCE009:22BCE009@mongodb.qcyigcb.mongodb.net/hack_nu"
+mongo = PyMongo(app)
 
-waste_analytics = {
-    "daily_waste": 5.2,
-    "weekly_waste": 35.8,
-    "monthly_waste": 150.3,
-    "waste_by_category": {
-        "vegetables": 40,
-        "meat": 30,
-        "dairy": 20,
-        "other": 10
-    }
-}
+db = mongo.db.users  # Reference to the users collection
 
-@app.route('/')
-def home():
-    return jsonify({
-        "message": "Welcome to Smart Kitchen API",
-        "version": "1.0.0"
-    })
+# Signup API
+@app.route("/signup", methods=["POST"])
+def signup():
+    data = request.json
+    if not all(k in data for k in ("name", "email", "restaurant_name", "password")):
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    if db.find_one({"email": data["email"]}):
+        return jsonify({"error": "Email already exists"}), 400
+    
+    db.insert_one(data)
+    return jsonify({"message": "User registered successfully"}), 201
 
-# Inventory Management Routes
-@app.route('/api/inventory', methods=['GET'])
-def get_inventory():
-    return jsonify(inventory_data)
+# Login API
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    user = db.find_one({"email": data.get("email"), "password": data.get("password")})
+    
+    if user:
+        return jsonify({"message": "Login successful"}), 200
+    return jsonify({"error": "Invalid email or password"}), 401
 
-@app.route('/api/inventory/scan', methods=['POST'])
-def scan_inventory():
-    # This would integrate with computer vision for real-time scanning
-    return jsonify({"message": "Inventory scan completed"})
-
-# Waste Analytics Routes
-@app.route('/api/analytics/waste', methods=['GET'])
-def get_waste_analytics():
-    return jsonify(waste_analytics)
-
-@app.route('/api/analytics/predictions', methods=['GET'])
-def get_predictions():
-    # This would integrate with ML models for spoilage prediction
-    return jsonify({
-        "predictions": [
-            {
-                "item": "Tomatoes",
-                "spoilage_probability": 0.15,
-                "recommended_action": "Use within 2 days"
-            }
-        ]
-    })
-
-# Menu Optimization Routes
-@app.route('/api/menu/optimize', methods=['POST'])
-def optimize_menu():
-    # This would integrate with ML for menu optimization
-    return jsonify({
-        "optimized_menu": [
-            {
-                "dish": "Margherita Pizza",
-                "waste_reduction": "15%",
-                "profit_increase": "8%"
-            }
-        ]
-    })
-
-# Insights Dashboard Routes
-@app.route('/api/insights', methods=['GET'])
-def get_insights():
-    return jsonify({
-        "insights": [
-            {
-                "type": "waste_reduction",
-                "message": "Reduce tomato order by 20% next week",
-                "impact": "Potential savings: $150"
-            },
-            {
-                "type": "inventory_alert",
-                "message": "Chicken stock running low",
-                "severity": "high"
-            }
-        ]
-    })
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+if __name__ == "__main__":
+    app.run(debug=True)

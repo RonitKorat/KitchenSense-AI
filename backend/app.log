@@ -1,0 +1,104 @@
+2025-03-30 11:14:30,186 - INFO - Initializing database...
+2025-03-30 11:14:30,225 - INFO - Database initialized successfully
+2025-03-30 11:15:07,414 - INFO - Initializing database...
+2025-03-30 11:15:07,414 - INFO - Database initialized successfully
+2025-03-30 11:15:07,414 - INFO - === Starting Flask Application ===
+2025-03-30 11:15:07,414 - INFO - Working directory: C:\Users\Dell\OneDrive\Desktop\hack_nu_thon\backend
+2025-03-30 11:15:07,414 - INFO - Python version: 3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+2025-03-30 11:15:07,510 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.194.128:5000
+2025-03-30 11:15:07,511 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 11:15:07,538 - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-30 11:15:07,937 - INFO - Initializing database...
+2025-03-30 11:15:07,937 - INFO - Database initialized successfully
+2025-03-30 11:15:07,937 - INFO - === Starting Flask Application ===
+2025-03-30 11:15:07,937 - INFO - Working directory: C:\Users\Dell\OneDrive\Desktop\hack_nu_thon\backend
+2025-03-30 11:15:07,937 - INFO - Python version: 3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+2025-03-30 11:15:07,973 - WARNING -  * Debugger is active!
+2025-03-30 11:15:07,973 - INFO -  * Debugger PIN: 124-788-350
+2025-03-30 11:15:16,110 - INFO - 127.0.0.1 - - [30/Mar/2025 11:15:16] "[33mPOST /api/auth/login HTTP/1.1[0m" 404 -
+2025-03-30 11:15:19,998 - INFO - Prediction endpoint accessed
+2025-03-30 11:15:19,998 - INFO - 127.0.0.1 - - [30/Mar/2025 11:15:19] "GET /api/get HTTP/1.1" 200 -
+2025-03-30 11:19:05,401 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\test_connection.py', reloading
+2025-03-30 11:19:05,524 - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-30 11:19:05,986 - INFO - Initializing database...
+2025-03-30 11:19:05,988 - INFO - Database initialized successfully
+2025-03-30 11:19:05,988 - INFO - === Starting Flask Application ===
+2025-03-30 11:19:05,988 - INFO - Working directory: C:\Users\Dell\OneDrive\Desktop\hack_nu_thon\backend
+2025-03-30 11:19:05,988 - INFO - Python version: 3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+2025-03-30 11:19:06,014 - WARNING -  * Debugger is active!
+2025-03-30 11:19:06,018 - INFO -  * Debugger PIN: 124-788-350
+2025-03-30 11:19:11,118 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\test_api.py', reloading
+2025-03-30 11:19:12,154 - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-30 11:19:12,620 - INFO - Initializing database...
+2025-03-30 11:19:12,620 - INFO - Database initialized successfully
+2025-03-30 11:19:12,620 - INFO - === Starting Flask Application ===
+2025-03-30 11:19:12,620 - INFO - Working directory: C:\Users\Dell\OneDrive\Desktop\hack_nu_thon\backend
+2025-03-30 11:19:12,620 - INFO - Python version: 3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+2025-03-30 11:19:12,644 - WARNING -  * Debugger is active!
+2025-03-30 11:19:12,652 - INFO -  * Debugger PIN: 124-788-350
+2025-03-30 11:22:12,839 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:22:12,839 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:22:12,938 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:22:12,938 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:22:13,074 - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-30 11:22:13,573 - INFO - Initializing database...
+2025-03-30 11:22:13,574 - INFO - Database initialized successfully
+2025-03-30 11:22:13,574 - INFO - === Starting Flask Application ===
+2025-03-30 11:22:13,575 - INFO - Working directory: C:\Users\Dell\OneDrive\Desktop\hack_nu_thon\backend
+2025-03-30 11:22:13,575 - INFO - Python version: 3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+2025-03-30 11:22:13,584 - WARNING -  * Debugger is active!
+2025-03-30 11:22:13,599 - INFO -  * Debugger PIN: 124-788-350
+2025-03-30 11:23:37,993 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:23:37,996 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:23:38,873 - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-30 11:25:17,042 - INFO - Initializing database...
+2025-03-30 11:25:17,042 - INFO - Database initialized successfully
+2025-03-30 11:25:17,042 - INFO - === Starting Flask Application ===
+2025-03-30 11:25:17,048 - INFO - Working directory: C:\Users\Dell\OneDrive\Desktop\hack_nu_thon\backend
+2025-03-30 11:25:17,048 - INFO - Python version: 3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+2025-03-30 11:25:17,091 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.194.128:5000
+2025-03-30 11:25:17,091 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 11:25:17,111 - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-30 11:25:17,533 - INFO - Initializing database...
+2025-03-30 11:25:17,533 - INFO - Database initialized successfully
+2025-03-30 11:25:17,533 - INFO - === Starting Flask Application ===
+2025-03-30 11:25:17,533 - INFO - Working directory: C:\Users\Dell\OneDrive\Desktop\hack_nu_thon\backend
+2025-03-30 11:25:17,533 - INFO - Python version: 3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+2025-03-30 11:25:17,576 - WARNING -  * Debugger is active!
+2025-03-30 11:25:17,576 - INFO -  * Debugger PIN: 124-788-350
+2025-03-30 11:25:54,407 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:25:54,412 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:25:54,766 - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-30 11:25:55,257 - INFO - Initializing database...
+2025-03-30 11:25:55,257 - INFO - Database initialized successfully
+2025-03-30 11:26:20,951 - INFO - Initializing database...
+2025-03-30 11:26:20,951 - INFO - Database initialized successfully
+2025-03-30 11:26:30,381 - INFO - Initializing database...
+2025-03-30 11:26:30,381 - INFO - Database initialized successfully
+2025-03-30 11:26:30,381 - INFO - === Starting Flask Application ===
+2025-03-30 11:26:30,381 - INFO - Working directory: C:\Users\Dell\OneDrive\Desktop\hack_nu_thon\backend
+2025-03-30 11:26:30,381 - INFO - Python version: 3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+2025-03-30 11:26:30,447 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.194.128:5000
+2025-03-30 11:26:30,447 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 11:26:30,467 - INFO -  * Restarting with watchdog (windowsapi)
+2025-03-30 11:26:30,852 - INFO - Initializing database...
+2025-03-30 11:26:30,852 - INFO - Database initialized successfully
+2025-03-30 11:26:30,852 - INFO - === Starting Flask Application ===
+2025-03-30 11:26:30,852 - INFO - Working directory: C:\Users\Dell\OneDrive\Desktop\hack_nu_thon\backend
+2025-03-30 11:26:30,852 - INFO - Python version: 3.12.0 (tags/v3.12.0:0fb18b0, Oct  2 2023, 13:03:39) [MSC v.1935 64 bit (AMD64)]
+2025-03-30 11:26:30,881 - WARNING -  * Debugger is active!
+2025-03-30 11:26:30,883 - INFO -  * Debugger PIN: 124-788-350
+2025-03-30 11:26:54,867 - INFO - 127.0.0.1 - - [30/Mar/2025 11:26:54] "[31m[1mPOST /api/login HTTP/1.1[0m" 400 -
+2025-03-30 11:28:11,375 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:28:11,375 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:28:11,375 - INFO -  * Detected change in 'C:\\Users\\Dell\\OneDrive\\Desktop\\hack_nu_thon\\backend\\app.py', reloading
+2025-03-30 11:28:12,186 - INFO -  * Restarting with watchdog (windowsapi)

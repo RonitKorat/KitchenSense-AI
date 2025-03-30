@@ -1,0 +1,129 @@
+{
+  "ingredients": {
+    "one": [
+      {
+        "name": "Tomato",
+        "quantity": 100,
+        "freshness": 5
+      },
+      {
+        "name": "Lettuce",
+        "quantity": 50,
+        "freshness": 3
+      },
+      {
+        "name": "Chicken Breast",
+        "quantity": 30,
+        "freshness": 7
+      },
+      {
+        "name": "Cheese",
+        "quantity": 20,
+        "freshness": 10
+      }
+    ],
+    "two": [
+      {
+        "name": "Onion",
+        "quantity": 80,
+        "freshness": 6
+      },
+      {
+        "name": "Carrot",
+        "quantity": 60,
+        "freshness": 4
+      },
+      {
+        "name": "Potato",
+        "quantity": 120,
+        "freshness": 8
+      },
+      {
+        "name": "Beef Patty",
+        "quantity": 25,
+        "freshness": 9
+      },
+      {
+        "name": "Cucumber",
+        "quantity": 40,
+        "freshness": 5
+      }
+    ],
+    "three": [
+      {
+        "name": "Bell Pepper",
+        "quantity": 35,
+        "freshness": 7
+      },
+      {
+        "name": "Mushroom",
+        "quantity": 55,
+        "freshness": 3
+      },
+      {
+        "name": "Spinach",
+        "quantity": 45,
+        "freshness": 2
+      },
+      {
+        "name": "Salmon",
+        "quantity": 15,
+        "freshness": 6
+      },
+      {
+        "name": "Eggplant",
+        "quantity": 70,
+        "freshness": 5
+      },
+      {
+        "name": "Zucchini",
+        "quantity": 40,
+        "freshness": 7
+      }
+    ],
+    "four": [
+      {
+        "name": "Garlic",
+        "quantity": 30,
+        "freshness": 12
+      },
+      {
+        "name": "Ginger",
+        "quantity": 25,
+        "freshness": 14
+      },
+      {
+        "name": "Basil",
+        "quantity": 20,
+        "freshness": 3
+      },
+      {
+        "name": "Avocado",
+        "quantity": 18,
+        "freshness": 5
+      }
+    ],
+    "five": [
+      {
+        "name": "Milk",
+        "quantity": 50,
+        "freshness": 7
+      },
+      {
+        "name": "Butter",
+        "quantity": 15,
+        "freshness": 10
+      },
+      {
+        "name": "Yogurt",
+        "quantity": 25,
+        "freshness": 6
+      },
+      {
+        "name": "Tofu",
+        "quantity": 20,
+        "freshness": 8
+      }
+    ]
+  }
+} 
