@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import axios from 'axios';
+import WastePrediction from '../components/WastePrediction';
+import OptimalStock from '../components/OptimalStock';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -16,8 +17,7 @@ import {
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend
@@ -29,23 +29,37 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-// Generate years from 2020 to current year + 5
+// Generate years from 2020 to current year - 1 (past years only)
 const YEARS = Array.from(
-  { length: new Date().getFullYear() - 2020 + 6 }, 
+  { length: new Date().getFullYear() - 2020 }, 
   (_, i) => 2020 + i
 );
 
 const Analytics = () => {
   const [activeTab, setActiveTab] = useState('sales');
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [compareYear1, setCompareYear1] = useState(new Date().getFullYear() - 1);
-  const [compareYear2, setCompareYear2] = useState(new Date().getFullYear());
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedYears, setSelectedYears] = useState([2022, 2023]);  // Default to past years
   const [forecastData, setForecastData] = useState(null);
   const [comparisonData, setComparisonData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [backendStatus, setBackendStatus] = useState('checking');
+
+  // Validate date selection
+  const handleDateChange = (e) => {
+    const newDate = e.target.value;
+    const selectedDateObj = new Date(newDate);
+    const today = new Date();
+    
+    // If selected date is in the past, show error
+    if (selectedDateObj < today) {
+      setError('Please select a current or future date for prediction');
+      return;
+    }
+    
+    setSelectedDate(newDate);
+    setError(null);
+  };
 
   // Check backend status on component mount
   useEffect(() => {
@@ -71,8 +85,7 @@ const Analytics = () => {
       setLoading(true);
       setError(null);
       const response = await axios.post('http://localhost:5000/api/generate_forecast', {
-        month: MONTHS[selectedMonth - 1],
-        year: selectedYear
+        date: selectedDate
       });
       setForecastData(response.data);
     } catch (err) {
@@ -92,15 +105,14 @@ const Analytics = () => {
       setLoading(true);
       setError(null);
       
-      if (compareYear1 >= compareYear2) {
-        setError('First year must be less than second year');
+      if (selectedYears.length < 1) {
+        setError('Please select at least one year to compare');
         return;
       }
 
       const response = await axios.post('http://localhost:5000/api/compare_years', {
-        month: MONTHS[selectedMonth - 1],
-        year1: compareYear1,
-        year2: compareYear2
+        date: selectedDate,
+        years: selectedYears
       });
       setComparisonData(response.data);
     } catch (err) {
@@ -126,18 +138,18 @@ const Analytics = () => {
 
   // Prepare chart data for comparison
   const comparisonChartData = comparisonData ? {
-    labels: Object.keys(comparisonData[0].ingredient_consumption),
+    labels: Object.keys(comparisonData.predicted_ingredient_consumption),
     datasets: [
-      {
-        label: `${compareYear1}`,
-        data: Object.values(comparisonData[0].ingredient_consumption),
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+      ...comparisonData.historical_data.map((data, index) => ({
+        label: `Year ${data.year}`,
+        data: Object.values(data.ingredient_consumption),
+        borderColor: `hsl(${index * 120}, 70%, 50%)`,
+        backgroundColor: `hsla(${index * 120}, 70%, 50%, 0.5)`,
         tension: 0.4,
-      },
+      })),
       {
-        label: `${compareYear2}`,
-        data: Object.values(comparisonData[1].ingredient_consumption),
+        label: `Predicted ${new Date(comparisonData.target_date).getFullYear()}`,
+        data: Object.values(comparisonData.predicted_ingredient_consumption),
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
         tension: 0.4,
@@ -232,6 +244,16 @@ const Analytics = () => {
                 Sales Forecasting
               </button>
               <button
+                onClick={() => setActiveTab('comparison')}
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                  activeTab === 'comparison'
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+              >
+                Year Comparison
+              </button>
+              <button
                 onClick={() => setActiveTab('waste')}
                 className={`px-6 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                   activeTab === 'waste'
@@ -239,77 +261,81 @@ const Analytics = () => {
                     : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
-                Year Comparison
+                Waste Prediction
+              </button>
+              <button
+                onClick={() => setActiveTab('optimal_stock')}
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                  activeTab === 'optimal_stock'
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+              >
+                Optimal Stock
               </button>
             </div>
           </div>
         </div>
 
         {/* Input Controls */}
+        {(activeTab === 'sales' || activeTab === 'comparison') && (
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Month
-              </label>
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              >
-                {MONTHS.map((month, index) => (
-                  <option key={month} value={index + 1}>{month}</option>
-                ))}
-              </select>
-            </div>
             {activeTab === 'sales' ? (
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Year
+                  Target Date (Current or Future)
                 </label>
-                <select
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  min={new Date().toISOString().split('T')[0]}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                >
-                  {YEARS.map(year => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
+                />
               </div>
-            ) : (
+            ) : activeTab === 'comparison' ? (
               <>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    First Year
+                    Target Date (Current or Future)
                   </label>
-                  <select
-                    value={compareYear1}
-                    onChange={(e) => setCompareYear1(parseInt(e.target.value))}
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    min={new Date().toISOString().split('T')[0]}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  >
-                    {YEARS.map(year => (
-                      <option key={year} value={year}>{year}</option>
-                    ))}
-                  </select>
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Second Year
+                    Past Years to Compare
                   </label>
-                  <select
-                    value={compareYear2}
-                    onChange={(e) => setCompareYear2(parseInt(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  >
+                  <div className="flex flex-wrap gap-2">
                     {YEARS.map(year => (
-                      <option key={year} value={year}>{year}</option>
+                      <label key={year} className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={selectedYears.includes(year)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedYears([...selectedYears, year]);
+                            } else {
+                              setSelectedYears(selectedYears.filter(y => y !== year));
+                            }
+                          }}
+                          className="form-checkbox h-4 w-4 text-blue-600"
+                        />
+                        <span className="ml-2 text-gray-700 dark:text-gray-300">{year}</span>
+                      </label>
                     ))}
-                  </select>
+                  </div>
                 </div>
               </>
-            )}
+            ) : null}
           </div>
+
           <div className="mt-6 flex justify-center">
             <button
               onClick={activeTab === 'sales' ? generateForecast : compareYears}
@@ -320,10 +346,12 @@ const Analytics = () => {
                   : 'bg-blue-600 hover:bg-blue-700'
               }`}
             >
-              {loading ? 'Processing...' : activeTab === 'sales' ? 'Generate Forecast' : 'Compare Years'}
+              {loading ? 'Processing...' : 
+              activeTab === 'sales' ? 'Generate Forecast' : 'Compare Years'}
             </button>
           </div>
         </div>
+        )}
 
         {/* Error Message */}
         {error && (
@@ -340,119 +368,137 @@ const Analytics = () => {
           exit={{ opacity: 0, y: -20 }}
           className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-8"
         >
-          {/* Chart Section */}
-          <div className="mb-8">
-            {activeTab === 'sales' ? (
-              forecastChartData ? (
-                <Line options={chartOptions} data={forecastChartData} />
-              ) : (
-                <div className="text-center text-gray-600 dark:text-gray-300">
-                  Generate a forecast to see the chart
-                </div>
-              )
-            ) : (
-              comparisonChartData ? (
-                <Line options={chartOptions} data={comparisonChartData} />
-              ) : (
-                <div className="text-center text-gray-600 dark:text-gray-300">
-                  Compare years to see the chart
-                </div>
-              )
-            )}
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-2">
-                {activeTab === 'sales' ? 'Total Consumption' : 'Year Difference'}
-              </h3>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                {activeTab === 'sales' 
-                  ? forecastData 
-                    ? `${Object.values(forecastData.predicted_ingredient_consumption).reduce((a, b) => a + b, 0)}g`
-                    : 'N/A'
-                  : comparisonData
-                    ? `${Object.values(comparisonData[1].ingredient_consumption).reduce((a, b) => a + b, 0) - 
-                        Object.values(comparisonData[0].ingredient_consumption).reduce((a, b) => a + b, 0)}g`
-                    : 'N/A'
-                }
-              </p>
-            </div>
-            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-green-600 dark:text-green-400 mb-2">
-                {activeTab === 'sales' ? 'Average Consumption' : 'Change Percentage'}
-              </h3>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                {activeTab === 'sales'
-                  ? forecastData
-                    ? `${Math.round(Object.values(forecastData.predicted_ingredient_consumption).reduce((a, b) => a + b, 0) / 
-                        Object.keys(forecastData.predicted_ingredient_consumption).length)}g`
-                    : 'N/A'
-                  : comparisonData
-                    ? `${Math.round(((Object.values(comparisonData[1].ingredient_consumption).reduce((a, b) => a + b, 0) - 
-                        Object.values(comparisonData[0].ingredient_consumption).reduce((a, b) => a + b, 0)) / 
-                        Object.values(comparisonData[0].ingredient_consumption).reduce((a, b) => a + b, 0)) * 100)}%`
-                    : 'N/A'
-                }
-              </p>
-            </div>
-            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-purple-600 dark:text-purple-400 mb-2">
-                {activeTab === 'sales' ? 'Peak Ingredient' : 'Most Changed Ingredient'}
-              </h3>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                {activeTab === 'sales'
-                  ? forecastData
-                    ? Object.entries(forecastData.predicted_ingredient_consumption)
-                        .reduce((a, b) => a[1] > b[1] ? a : b)[0]
-                    : 'N/A'
-                  : comparisonData
-                    ? Object.entries(comparisonData[1].ingredient_consumption)
-                        .reduce((a, b) => 
-                          Math.abs(b[1] - comparisonData[0].ingredient_consumption[b[0]]) > 
-                          Math.abs(a[1] - comparisonData[0].ingredient_consumption[a[0]]) ? b : a
-                        )[0]
-                    : 'N/A'
-                }
-              </p>
-            </div>
-          </div>
-
-          {/* Insights Section */}
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              Key Insights
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <p className="text-gray-600 dark:text-gray-300">
-                  {activeTab === 'sales'
-                    ? forecastData
-                      ? `Based on historical data, we predict ${Object.keys(forecastData.predicted_ingredient_consumption).length} ingredients will be needed for ${MONTHS[selectedMonth - 1]} ${selectedYear}.`
-                      : 'Generate a forecast to see insights.'
-                    : comparisonData
-                      ? `Comparing ${MONTHS[selectedMonth - 1]} between ${compareYear1} and ${compareYear2} shows significant changes in ingredient consumption patterns.`
-                      : 'Compare years to see insights.'}
-                </p>
+          {activeTab === 'waste' ? (
+            <WastePrediction />
+          ) : activeTab === 'optimal_stock' ? (
+            <OptimalStock />
+          ) : (
+            <>
+              {/* Chart Section */}
+              <div className="mb-8">
+                {activeTab === 'sales' ? (
+                  forecastChartData ? (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        Forecast for {new Date(selectedDate).toLocaleDateString()}
+                      </h3>
+                      <Bar options={chartOptions} data={forecastChartData} />
+                    </>
+                  ) : (
+                    <div className="text-center text-gray-600 dark:text-gray-300">
+                      Generate a forecast to see the chart
+                    </div>
+                  )
+                ) : activeTab === 'comparison' ? (
+                  comparisonChartData ? (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        Comparison for {new Date(selectedDate).toLocaleDateString()}
+                      </h3>
+                      <Bar options={chartOptions} data={comparisonChartData} />
+                    </>
+                  ) : (
+                    <div className="text-center text-gray-600 dark:text-gray-300">
+                      Compare years to see the chart
+                    </div>
+                  )
+                ) : null}
               </div>
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <p className="text-gray-600 dark:text-gray-300">
-                  {activeTab === 'sales'
-                    ? forecastData
-                      ? `The forecast suggests optimal inventory levels for ${MONTHS[selectedMonth - 1]} ${selectedYear} to minimize waste and maximize efficiency.`
-                      : 'Generate a forecast to see insights.'
-                    : comparisonData
-                      ? `The comparison reveals trends in ingredient usage that can help optimize future inventory management.`
-                      : 'Compare years to see insights.'}
-                </p>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-2">
+                    {activeTab === 'sales' ? 'Total Consumption' : 'Year Difference'}
+                  </h3>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                    {activeTab === 'sales' 
+                      ? forecastData 
+                        ? `${Object.values(forecastData.predicted_ingredient_consumption).reduce((a, b) => a + b, 0)}g`
+                        : 'N/A'
+                      : comparisonData
+                        ? `${Object.values(comparisonData.predicted_ingredient_consumption).reduce((a, b) => a + b, 0) - 
+                            Object.values(comparisonData.historical_data[0].ingredient_consumption).reduce((a, b) => a + b, 0)}g`
+                        : 'N/A'
+                  }
+                  </p>
+                </div>
+                <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-green-600 dark:text-green-400 mb-2">
+                    {activeTab === 'sales' ? 'Average Consumption' : 'Change Percentage'}
+                  </h3>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                    {activeTab === 'sales'
+                      ? forecastData
+                        ? `${Math.round(Object.values(forecastData.predicted_ingredient_consumption).reduce((a, b) => a + b, 0) / 
+                            Object.keys(forecastData.predicted_ingredient_consumption).length)}g`
+                        : 'N/A'
+                      : comparisonData
+                        ? `${Math.round(((Object.values(comparisonData.predicted_ingredient_consumption).reduce((a, b) => a + b, 0) - 
+                            Object.values(comparisonData.historical_data[0].ingredient_consumption).reduce((a, b) => a + b, 0)) / 
+                            Object.values(comparisonData.historical_data[0].ingredient_consumption).reduce((a, b) => a + b, 0)) * 100)}%`
+                        : 'N/A'
+                  }
+                  </p>
+                </div>
+                <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-purple-600 dark:text-purple-400 mb-2">
+                    {activeTab === 'sales' ? 'Peak Ingredient' : 'Most Changed Ingredient'}
+                  </h3>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                    {activeTab === 'sales'
+                      ? forecastData
+                        ? Object.entries(forecastData.predicted_ingredient_consumption)
+                            .reduce((a, b) => a[1] > b[1] ? a : b)[0]
+                        : 'N/A'
+                      : comparisonData
+                        ? Object.entries(comparisonData.predicted_ingredient_consumption)
+                            .reduce((a, b) => 
+                              Math.abs(b[1] - comparisonData.historical_data[0].ingredient_consumption[b[0]]) > 
+                              Math.abs(a[1] - comparisonData.historical_data[0].ingredient_consumption[a[0]]) ? b : a
+                            )[0]
+                        : 'N/A'
+                  }
+                  </p>
+                </div>
               </div>
-            </div>
-          </div>
+
+              {/* Insights Section */}
+              <div className="mt-8">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                  Key Insights
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {activeTab === 'sales'
+                        ? forecastData
+                          ? `Based on historical data, we predict ${Object.keys(forecastData.predicted_ingredient_consumption).length} ingredients will be needed for ${MONTHS[new Date(selectedDate).getMonth() - 1]} ${new Date(selectedDate).getFullYear()}.`
+                          : 'Generate a forecast to see insights.'
+                        : comparisonData
+                          ? `Comparing ${MONTHS[new Date(selectedDate).getMonth() - 1]} between ${selectedYears[0]} and ${selectedYears[selectedYears.length - 1]} shows significant changes in ingredient consumption patterns.`
+                          : 'Compare years to see insights.'}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {activeTab === 'sales'
+                        ? forecastData
+                          ? `The forecast suggests optimal inventory levels for ${MONTHS[new Date(selectedDate).getMonth() - 1]} ${new Date(selectedDate).getFullYear()} to minimize waste and maximize efficiency.`
+                          : 'Generate a forecast to see insights.'
+                        : comparisonData
+                          ? `The comparison reveals trends in ingredient usage that can help optimize future inventory management.`
+                          : 'Compare years to see insights.'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </motion.div>
       </div>
     </div>
   );
 };
 
-export default Analytics; 
+export default Analytics;

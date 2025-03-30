@@ -123,6 +123,18 @@ const Navbar = () => {
                 >
                   Dashboard
                 </Link>
+                <Link
+                  to="/optimal-stock"
+                  className="text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-200"
+                >
+                  Optimal Stock
+                </Link>
+                <Link
+                  to="/waste-analysis"
+                  className="text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-200"
+                >
+                  Waste Analysis
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors duration-200"
@@ -227,6 +239,13 @@ const Navbar = () => {
                 onClick={() => setIsOpen(false)}
               >
                 Dashboard
+              </Link>
+              <Link
+                to="/optimal-stock"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                Optimal Stock
               </Link>
               <Link
                 to="/waste-analysis"

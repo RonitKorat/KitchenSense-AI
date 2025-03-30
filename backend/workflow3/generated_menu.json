@@ -4,94 +4,115 @@
     "menu": {
         "special_dishes": [
             {
-                "name": "Apple & Banana Crumble",
+                "name": "Apple & Banana Smoothie",
                 "ingredients": [
                     "apple",
                     "banana"
                 ],
                 "price": 4.99,
                 "discount": "25%",
-                "description": "Warm apple and banana crumble, perfect for a winter dessert."
+                "description": "A refreshing smoothie using apples and bananas nearing expiration."
             },
             {
-                "name": "Cucumber & Tomato Salad with Okra Fritters",
+                "name": "Cucumber & Tomato Salad",
                 "ingredients": [
                     "cucumber",
-                    "tomato",
-                    "okra"
-                ],
-                "price": 6.99,
-                "discount": "15%",
-                "description": "Refreshing salad with crispy okra fritters, a light and flavorful option."
-            },
-            {
-                "name": "Orange & Okra Stir Fry",
-                "ingredients": [
-                    "oranges",
-                    "okra"
-                ],
-                "price": 7.49,
-                "discount": "20%",
-                "description": "A sweet and savory stir fry that combines the zest of oranges with the unique texture of okra. Served with potatoes."
-            },
-            {
-                "name": "Spiced Patato & Tomato Soup",
-                "ingredients": [
-                    "patato",
                     "tomato"
                 ],
                 "price": 5.49,
+                "discount": "20%",
+                "description": "A light and healthy salad, perfect for a quick lunch or side dish."
+            },
+            {
+                "name": "Okra & Tomato Stew",
+                "ingredients": [
+                    "okra",
+                    "tomato"
+                ],
+                "price": 6.99,
+                "discount": "15%",
+                "description": "A hearty and flavorful stew using okra and tomatoes."
+            },
+            {
+                "name": "Roasted Potatoes with Oranges",
+                "ingredients": [
+                    "patato",
+                    "oranges"
+                ],
+                "price": 7.49,
                 "discount": "10%",
-                "description": "A comforting and hearty soup, perfect for a cold January day."
+                "description": "A unique dish pairing roasted potatoes with sweet and tangy oranges."
             }
         ],
         "normal_dishes": [
             {
-                "name": "Classic Patato Fries",
+                "name": "Classic Apple Pie",
                 "ingredients": [
-                    "patato"
+                    "apple"
                 ],
-                "price": 3.99,
-                "description": "Golden and crispy patato fries, a timeless favorite."
+                "price": 8.49,
+                "description": "A timeless dessert made with sweet apples."
             },
             {
-                "name": "Tomato & Cucumber Sandwich",
+                "name": "Banana Bread",
                 "ingredients": [
-                    "tomato",
-                    "cucumber"
+                    "banana"
                 ],
-                "price": 5.99,
-                "description": "A simple yet satisfying sandwich with fresh tomato and cucumber."
+                "price": 6.99,
+                "description": "Moist and flavorful banana bread, perfect for breakfast or a snack."
             },
             {
-                "name": "Fresh Orange Juice",
+                "name": "Greek Salad",
+                "ingredients": [
+                    "cucumber",
+                    "tomato"
+                ],
+                "price": 9.99,
+                "description": "A refreshing Greek salad with cucumbers and tomatoes."
+            },
+            {
+                "name": "Orange Juice",
                 "ingredients": [
                     "oranges"
                 ],
-                "price": 2.99,
-                "description": "Naturally squeezed orange juice"
+                "price": 4.49,
+                "description": "Freshly squeezed orange juice."
+            },
+            {
+                "name": "Fried Potatoes",
+                "ingredients": [
+                    "patato"
+                ],
+                "price": 5.99,
+                "description": "Crispy and golden fried potatoes."
             }
         ],
         "new_dishes": [
             {
-                "name": "Banana & Patato Mash with Orange Zest",
+                "name": "Spicy Okra Fries",
                 "ingredients": [
-                    "banana",
-                    "patato",
-                    "oranges"
-                ],
-                "price": 6.49,
-                "description": "A creamy and flavorful mash with a hint of citrus."
-            },
-            {
-                "name": "Apple, Cucumber & Okra Relish",
-                "ingredients": [
-                    "apple",
-                    "cucumber",
                     "okra"
                 ],
-                "price": 4.49,
-                "description": "A tangy and refreshing relish, perfect as a side or topping."
+                "price": 7.99,
+                "description": "Crispy okra fries with a spicy seasoning."
+            },
+            {
+                "name": "Potato and Tomato Soup",
+                "ingredients": [
+                    "patato",
+                    "tomato"
+                ],
+                "price": 6.49,
+                "description": "A comforting and hearty soup with potatoes and tomatoes."
+            },
+            {
+                "name": "Orange and Apple Compote",
+                "ingredients": [
+                    "oranges",
+                    "apple"
+                ],
+                "price": 5.99,
+                "description": "A simple and delicious compote of oranges and apples."
             }
         ]
     }

@@ -14,6 +14,7 @@ import Settings from './pages/Settings';
 import Menu from './pages/Menu';
 import WasteAnalysis from './pages/WasteAnalysis';
 import SpecialFeatures from './pages/SpecialFeatures';
+import OptimalStock from './components/OptimalStock';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
               <Route path="/menu" element={<Menu />} />
               <Route path="/waste-analysis" element={<WasteAnalysis />} />
               <Route path="/special-features" element={<SpecialFeatures />} />
+              <Route path="/optimal-stock" element={<OptimalStock />} />
             </Routes>
           </main>
         </div>
