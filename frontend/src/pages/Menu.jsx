@@ -178,7 +178,7 @@ const Menu = () => {
                 </div>
               </div>
             </div>
-          </motion.div>
+        </motion.div>
         )}
 
         {/* Loading State */}

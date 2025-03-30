@@ -6,6 +6,9 @@ import json
 import os
 import sys
 import time
+import pandas as pd
+import numpy as np
+from prophet import Prophet
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -15,6 +18,33 @@ app.config["MONGO_URI"] = "mongodb+srv://22BCE009:22BCE009@mongodb.qcyigcb.mongo
 mongo = PyMongo(app)
 
 db = mongo.db.users  # Reference to the users collection
+
+# Import required modules for forecasting
+import pandas as pd
+import numpy as np
+from prophet import Prophet
+
+# Define recipes with ingredient quantities
+RECIPES = {
+    "Tropical Fruit Salad": {"apple": 150, "banana": 100, "oranges": 130, "cucumber": 0, "okra": 0, "patato": 0, "tomato": 0},
+    "Garden Vegetable Medley": {"cucumber": 75, "okra": 60, "tomato": 50, "apple": 0, "banana": 0, "oranges": 0, "patato": 0},
+    "Hearty Potato Curry": {"patato": 150, "tomato": 50, "okra": 60, "apple": 0, "banana": 0, "cucumber": 0, "oranges": 0},
+    "Fruity Veggie Smoothie": {"apple": 100, "banana": 100, "cucumber": 75, "oranges": 130, "okra": 0, "patato": 0, "tomato": 0},
+    "Spicy Veggie Stir-Fry": {"patato": 150, "tomato": 50, "okra": 60, "cucumber": 75, "apple": 0, "banana": 0, "oranges": 0}
+}
+
+# Load the dataset
+df = pd.read_csv('workflow2/menu_dataset.csv')
+
+# Health check endpoint
+@app.route("/api/health", methods=["GET"])
+def health_check():
+    try:
+        # Check if MongoDB is connected
+        mongo.db.command('ping')
+        return jsonify({"status": "healthy", "database": "connected"}), 200
+    except Exception as e:
+        return jsonify({"status": "unhealthy", "error": str(e)}), 500
 
 # Signup API
 @app.route("/signup", methods=["POST"])
@@ -100,10 +130,6 @@ def menu():
         # Get the final output
         stdout, stderr = process.communicate()
 
-        # Log the complete output for debugging
-        print("Complete stdout:", stdout)
-        print("Complete stderr:", stderr)
-
         if process.returncode == 0:
             try:
                 # Try to read from the generated JSON file first
@@ -137,6 +163,106 @@ def menu():
             "details": str(e),
             "type": type(e).__name__
         }), 500
+
+@app.route('/api/generate_forecast', methods=['POST'])
+def generate_forecast():
+    try:
+        data = request.get_json()
+        custom_month = data.get('month')
+        custom_year = data.get('year')
+
+        if not custom_month or not custom_year:
+            return jsonify({"error": "Month and year are required"}), 400
+
+        # Convert month name to datetime
+        target_date = pd.to_datetime(f"{custom_year}-{pd.to_datetime(custom_month, format='%B').month:02d}-01")
+
+        # Initialize a dictionary to hold total predicted consumption per ingredient
+        ingredient_totals = {}
+
+        # Get list of unique items
+        items = df['item_name'].unique()
+
+        for item in items:
+            df_item = df[df['item_name'] == item].copy()
+            df_item['ds'] = pd.to_datetime(
+                df_item['year'].astype(str) + '-' +
+                df_item['month'].apply(lambda x: str(pd.to_datetime(x, format='%B').month).zfill(2)) + '-01'
+            )
+            df_item = df_item.sort_values("ds")[['ds', 'sale_units']].rename(columns={'sale_units': 'y'})
+            
+            # Fit Prophet model on historical data for the item
+            model = Prophet()
+            model.fit(df_item)
+            
+            # Create a DataFrame for target date prediction
+            future_df = pd.DataFrame({'ds': [target_date]})
+            forecast = model.predict(future_df)
+            
+            predicted_sales = forecast['yhat'].iloc[0]
+            
+            if item in RECIPES:
+                for ing, grams in RECIPES[item].items():
+                    consumption = predicted_sales * grams
+                    ingredient_totals[ing] = ingredient_totals.get(ing, 0) + consumption
+
+        # Round values to integers
+        ingredient_totals = {k: int(np.round(v)) for k, v in ingredient_totals.items()}
+
+        # Create response JSON
+        response = {
+            "target_month": custom_month,
+            "target_year": custom_year,
+            "predicted_ingredient_consumption": ingredient_totals
+        }
+
+        return jsonify(response)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/compare_years', methods=['POST'])
+def compare_years():
+    try:
+        data = request.get_json()
+        custom_month = data.get('month')
+        year1 = data.get('year1')
+        year2 = data.get('year2')
+
+        if not all([custom_month, year1, year2]):
+            return jsonify({"error": "Month and both years are required"}), 400
+
+        # Identify ingredient sale columns (excluding 'sale_units')
+        ingredient_columns = [col for col in df.columns if col.startswith("sale_") and col != "sale_units"]
+
+        # Initialize list to store consumption data
+        consumption_list = []
+
+        # Process both years
+        for year in [year1, year2]:
+            # Filter data for the specific year and custom month
+            filtered_df = df[(df["month"] == custom_month) & (df["year"] == year)]
+            
+            # Sum ingredient consumption
+            ingredient_consumption = filtered_df[ingredient_columns].sum().to_dict()
+            
+            # Rename keys to remove "sale_" prefix
+            ingredient_consumption = {key.replace("sale_", ""): value for key, value in ingredient_consumption.items()}
+            
+            # Create an object with required keys
+            consumption_obj = {
+                "month": custom_month,
+                "year": int(year),
+                "ingredient_consumption": {k: int(v) for k, v in ingredient_consumption.items()}
+            }
+            
+            # Append to the list
+            consumption_list.append(consumption_obj)
+
+        return jsonify(consumption_list)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
