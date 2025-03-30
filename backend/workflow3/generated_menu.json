@@ -1,0 +1,90 @@
+{
+    "month": "January",
+    "year": 2025,
+    "menu": {
+        "special_dishes": [
+            {
+                "name": "Apple & Banana Smoothie",
+                "ingredients": [
+                    "apple",
+                    "banana"
+                ],
+                "price": 4.99,
+                "discount": "25%",
+                "description": "A refreshing smoothie to utilize soon-to-expire apples and bananas."
+            },
+            {
+                "name": "Cucumber & Tomato Salad",
+                "ingredients": [
+                    "cucumber",
+                    "tomato"
+                ],
+                "price": 6.99,
+                "discount": "15%",
+                "description": "A light and flavorful salad featuring fresh cucumber and tomato."
+            },
+            {
+                "name": "Okra and Tomato Stew",
+                "ingredients": [
+                    "okra",
+                    "tomato"
+                ],
+                "price": 7.99,
+                "discount": "10%",
+                "description": "A hearty and flavorful stew perfect for a cold day."
+            },
+            {
+                "name": "Orange & Apple Salad",
+                "ingredients": [
+                    "oranges",
+                    "apple"
+                ],
+                "price": 5.49,
+                "discount": "20%",
+                "description": "A tangy and sweet salad featuring fresh oranges and apples."
+            },
+            {
+                "name": "Potato and Okra Curry",
+                "ingredients": [
+                    "patato",
+                    "okra"
+                ],
+                "price": 8.49,
+                "discount": "15%",
+                "description": "A comforting and flavorful curry using potatoes and okra."
+            }
+        ],
+        "normal_dishes": [
+            {
+                "name": "Classic Burger",
+                "ingredients": [
+                    "beef",
+                    "lettuce",
+                    "tomato"
+                ],
+                "price": 10.99,
+                "description": "A timeless classic, juicy and satisfying."
+            },
+            {
+                "name": "Pasta Carbonara",
+                "ingredients": [
+                    "pasta",
+                    "eggs",
+                    "bacon"
+                ],
+                "price": 12.99,
+                "description": "A creamy and rich pasta dish with a satisfying flavor."
+            },
+            {
+                "name": "Chicken Caesar Salad",
+                "ingredients": [
+                    "chicken",
+                    "lettuce",
+                    "croutons"
+                ],
+                "price": 9.99,
+                "description": "A healthy and flavorful salad with grilled chicken."
+            }
+        ]
+    }
+}

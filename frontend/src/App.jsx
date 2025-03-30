@@ -10,6 +10,7 @@ import Inventory from './pages/Inventory';
 import Orders from './pages/Orders';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import Menu from './pages/Menu';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
               <Route path="/orders" element={<Orders />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/menu" element={<Menu />} />
             </Routes>
           </main>
         </div>

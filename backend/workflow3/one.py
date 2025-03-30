@@ -1,18 +1,27 @@
+import os
 import google.generativeai as genai
 import pandas as pd
 import json
+import time
 
 # Configure Gemini API key
-genai.configure(api_key="AIzaSyBeZR1UE57ipQIN0xgQOIuP1jNmucP13nU")  # Replace with your actual API key
+genai.configure(api_key="AIzaSyBeZR1UE57ipQIN0xgQOIuP1jNmucP13nU")
+
+# Get the script's directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+dataset_path = os.path.join(script_dir, "menu_dataset_final.csv")
+output_path = os.path.join(script_dir, "generated_menu.json")
 
 # Load menu dataset
-dataset_path = "menu_dataset_final.csv"
 try:
+    if not os.path.exists(dataset_path):
+        raise FileNotFoundError(f"Dataset not found at {dataset_path}")
+
     df = pd.read_csv(dataset_path)
-    menu_items = df.to_dict(orient='records')  # Convert dataset to list of dictionaries
+    menu_items = df.to_dict(orient='records')
 except Exception as e:
-    print(f"❌ Error loading dataset: {e}")
-    menu_items = []  # Use an empty dataset if there's an error
+    print(json.dumps({"error": f"Error loading dataset: {str(e)}"}))
+    exit(1)
 
 # Define input data
 input_data = {
@@ -52,45 +61,61 @@ You are an AI-powered **Smart Menu Generator** designed to optimize a restaurant
 ### **Return JSON Output ONLY (No Explanations)**
 Ensure the JSON output is **correctly formatted**.
 
-```json
 {{
     "month": "{input_data['target_month']}",
     "year": {input_data['target_year']},
     "menu": {{
         "special_dishes": [
-            {{
-                "name": "Dish Name",
-                "ingredients": ["ingredient1", "ingredient2"],
-                "price": 5.99,
-                "discount": "20%",
-                "description": "An innovative dish created using soon-to-expire ingredients."
-            }}
+            {{"name": "Dish Name", "ingredients": ["ingredient1", "ingredient2"], "price": 5.99, "discount": "20%", "description": "An innovative dish created using soon-to-expire ingredients."}}
         ],
         "normal_dishes": [
-            {{
-                "name": "Dish Name",
-                "ingredients": ["ingredient1", "ingredient2"],
-                "price": 8.99,
-                "description": "A high-demand dish adjusted for profit optimization."
-            }}
+            {{"name": "Dish Name", "ingredients": ["ingredient1", "ingredient2"], "price": 8.99, "description": "A high-demand dish adjusted for profit optimization."}}
         ]
     }}
 }}
 """
 
-
-# Call Gemini API to generate the menu
-response = genai.GenerativeModel("gemini-2.0-flash").generate_content(prompt)
-# Validate and save JSON output
-menu_output = response.text.strip()
-start_index = menu_output.find("{")
-end_index = menu_output.rfind("}") + 1
-
-if start_index != -1 and end_index != -1:
-    menu_json = json.loads(menu_output[start_index:end_index])  # Parse JSON safely
-    output_path = "optimized_menu.json"
-    with open(output_path, "w") as json_file:
-        json.dump(menu_json, json_file, indent=4)
-    print(f"✅ Menu saved successfully: {output_path}")
-else:
-    print("❌ Error: No valid JSON found in response.")
+# Generate menu using Gemini
+try:
+    print(json.dumps({"status": "Generating menu..."}))  # Initial status
+    model = genai.GenerativeModel('gemini-2.0-flash')
+    response = model.generate_content(prompt)
+    
+    # Extract the JSON part from the response
+    response_text = response.text
+    # Find the JSON part between ```json and ``` markers
+    if "```json" in response_text:
+        response_text = response_text.split("```json")[1].split("```")[0].strip()
+    
+    # Parse the response text as JSON
+    try:
+        menu_data = json.loads(response_text)
+    except json.JSONDecodeError:
+        # If response is not valid JSON, create a default structure
+        menu_data = {
+            "month": input_data['target_month'],
+            "year": input_data['target_year'],
+            "menu": {
+                "special_dishes": [],
+                "normal_dishes": []
+            }
+        }
+    
+    # Save to JSON file
+    with open(output_path, 'w') as f:
+        json.dump(menu_data, f, indent=4)
+    
+    # Print the final JSON response
+    print(json.dumps({
+        "status": "success",
+        "data": menu_data,
+        "file_path": output_path
+    }))
+    
+except Exception as e:
+    error_response = {
+        "status": "error",
+        "error": f"Error generating menu: {str(e)}"
+    }
+    print(json.dumps(error_response))
+    exit(1)
