@@ -7,14 +7,9 @@ import json
 import google.generativeai as genai
 from prophet import Prophet
 import sys
-import os
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
 
 # Configure Gemini API key
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key="gemini_api")
 
 def predict_optimal_stock(target_date):
     try:
