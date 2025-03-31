@@ -4,103 +4,119 @@
     "menu": {
         "special_dishes": [
             {
-                "name": "Apple & Banana Smoothie (High-Risk)",
+                "name": "Spiced Apple & Banana Crumble",
                 "ingredients": [
                     "apple",
                     "banana"
                 ],
-                "price": 3.99,
+                "price": 4.99,
                 "discount": "25%",
-                "description": "A refreshing smoothie using apples and bananas nearing expiration."
+                "description": "Warm apple and banana crumble, spiced to perfection and served with a crispy topping. Uses surplus apples and bananas."
             },
             {
-                "name": "Cucumber & Tomato Salad (High-Risk)",
-                "ingredients": [
-                    "cucumber",
-                    "tomato"
-                ],
-                "price": 4.49,
-                "discount": "20%",
-                "description": "A light and flavorful salad to utilize cucumbers and tomatoes before they spoil."
-            },
-            {
-                "name": "Okra & Tomato Stew (High-Risk)",
+                "name": "Okra & Tomato Stew",
                 "ingredients": [
                     "okra",
                     "tomato"
                 ],
                 "price": 6.99,
-                "discount": "15%",
-                "description": "A hearty stew combining okra and tomatoes to reduce waste."
+                "discount": "20%",
+                "description": "A hearty stew featuring okra and tomato, simmered with aromatic spices. Helps reduce okra and tomato waste."
             },
             {
-                "name": "Patato & Okra Hash (High-Risk)",
-                "ingredients": [
-                    "patato",
-                    "okra"
-                ],
-                "price": 5.49,
-                "discount": "10%",
-                "description": "Savory potato and okra hash, designed to use up expiring ingredients."
-            },
-            {
-                "name": "Orange & Apple Salad (High-Risk)",
-                "ingredients": [
-                    "oranges",
-                    "apple"
-                ],
-                "price": 4.99,
-                "discount": "30%",
-                "description": "A refreshing combination of orange and apple, best served chilled."
-            }
-        ],
-        "normal_dishes": [
-            {
-                "name": "Potato and Tomato Soup",
-                "ingredients": [
-                    "patato",
-                    "tomato"
-                ],
-                "price": 7.99,
-                "description": "A comforting and classic soup, adjusted price based on past demand."
-            },
-            {
-                "name": "Banana Bread",
-                "ingredients": [
-                    "banana"
-                ],
-                "price": 3.49,
-                "description": "Warm and delicious banana bread, price adjusted for January demand."
-            }
-        ],
-        "new_dishes": [
-            {
-                "name": "Cucumber, Tomato, and Orange Relish",
+                "name": "Cucumber & Tomato Salad with Orange Vinaigrette",
                 "ingredients": [
                     "cucumber",
                     "tomato",
                     "oranges"
                 ],
-                "price": 5.99,
-                "description": "A zesty and refreshing relish, perfect as a side or topping."
+                "price": 5.49,
+                "discount": "15%",
+                "description": "A refreshing salad of cucumber and tomato, tossed in a zesty orange vinaigrette. Utilizes excess cucumber, tomato, and oranges."
             },
             {
-                "name": "Apple and Potato Fritters",
+                "name": "Patato and Tomato Soup",
                 "ingredients": [
-                    "apple",
-                    "patato"
+                    "patato",
+                    "tomato"
+                ],
+                "price": 5.99,
+                "discount": "10%",
+                "description": "A filling soup with the flavor of potatoes and tomatoes."
+            }
+        ],
+        "normal_dishes": [
+            {
+                "name": "Apple Pie (Adjusted Price)",
+                "ingredients": [
+                    "apple"
+                ],
+                "price": 9.99,
+                "description": "Classic apple pie, made with fresh apples and a flaky crust. Price adjusted due to high demand."
+            },
+            {
+                "name": "Banana Bread (Adjusted Price)",
+                "ingredients": [
+                    "banana"
                 ],
                 "price": 6.49,
-                "description": "Sweet and savory fritters, a unique and flavorful snack."
+                "description": "Moist and flavorful banana bread, perfect for breakfast or a snack. Price adjusted due to popularity."
             },
             {
-                "name": "Oranges and Okra stir fry",
+                "name": "Orange Juice (Adjusted Price)",
+                "ingredients": [
+                    "oranges"
+                ],
+                "price": 3.99,
+                "description": "Freshly squeezed orange juice, a refreshing and healthy choice. Price adjusted based on sales trends."
+            },
+            {
+                "name": "Potato Fries (Adjusted Price)",
+                "ingredients": [
+                    "patato"
+                ],
+                "price": 4.49,
+                "description": "Classic Potato Fries, seasoned to perfection. Price Adjusted based on demand."
+            }
+        ],
+        "new_dishes": [
+            {
+                "name": "Cucumber & Apple Smoothie",
+                "ingredients": [
+                    "cucumber",
+                    "apple"
+                ],
+                "price": 4.79,
+                "description": "A refreshing smoothie made with cucumber and apple, a healthy and hydrating option."
+            },
+            {
+                "name": "Orange & Okra Stir-Fry",
                 "ingredients": [
                     "oranges",
                     "okra"
                 ],
                 "price": 8.49,
-                "description": "A unique stir fry combining oranges and okra to make an affordable meal."
+                "description": "A unique stir-fry featuring oranges and okra, offering a sweet and savory flavor combination."
+            },
+            {
+                "name": "Patato, Apple & Tomato Hash",
+                "ingredients": [
+                    "patato",
+                    "apple",
+                    "tomato"
+                ],
+                "price": 7.99,
+                "description": "A hearty hash made with patato, apple, and tomato."
+            },
+            {
+                "name": "Banana, Oranges and Apple Salad",
+                "ingredients": [
+                    "banana",
+                    "oranges",
+                    "apple"
+                ],
+                "price": 6.49,
+                "description": "A Fruit salad with a mix of banana, oranges and apples."
             }
         ]
     }

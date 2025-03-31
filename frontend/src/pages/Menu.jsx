@@ -26,12 +26,17 @@ const Menu = () => {
         throw new Error(data.error || 'Failed to generate menu');
       }
 
+      // Validate the data structure
+      if (!data || !data.data || !data.data.menu) {
+        throw new Error('Invalid menu data structure received from server');
+      }
+
       // Process the menu data to ensure all required fields are present
       const processedMenu = {
-        month: data.month,
-        year: data.year,
+        month: data.data.month || currentMonth,
+        year: data.data.year || currentYear,
         menu: {
-          special_dishes: data.menu.special_dishes.map(dish => ({
+          special_dishes: (data.data.menu.special_dishes || []).map(dish => ({
             name: dish.name || 'Unnamed Dish',
             description: dish.description || 'No description available',
             price: dish.price || 0,
@@ -41,7 +46,7 @@ const Menu = () => {
               quantity: '100g' // Default quantity since API doesn't provide it
             }))
           })),
-          normal_dishes: data.menu.normal_dishes.map(dish => ({
+          normal_dishes: (data.data.menu.normal_dishes || []).map(dish => ({
             name: dish.name || 'Unnamed Dish',
             description: dish.description || 'No description available',
             price: dish.price || 0,
@@ -50,7 +55,7 @@ const Menu = () => {
               quantity: '100g' // Default quantity since API doesn't provide it
             }))
           })),
-          new_dishes: data.menu.new_dishes.map(dish => ({
+          new_dishes: (data.data.menu.new_dishes || []).map(dish => ({
             name: dish.name || 'Unnamed Dish',
             description: dish.description || 'No description available',
             price: dish.price || 0,
