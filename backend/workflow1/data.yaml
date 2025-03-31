@@ -1,0 +1,15 @@
+train: train/images
+val: valid/images
+test: test/images
+
+names: 
+  0: beet
+  1: broccoli
+  2: cabbage
+  3: carrot
+  4: cauliflower
+  5: cucumber
+  6: onion
+  7: potato
+  8: tomato
+  9: yam

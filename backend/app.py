@@ -14,7 +14,7 @@ import base64
 import shutil
 import re
 import cv2
-import tensorflow as tf
+from ultralytics import YOLO
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -482,83 +482,66 @@ def detect_and_classify():
         if file.filename == '':
             return jsonify({"error": "No selected file"}), 400
 
-        # Create output directories if they don't exist
-        bbox_dir = os.path.join(app.root_path, 'bbox_images')
-        cropped_dir = os.path.join(app.root_path, 'cropped_images')
-        os.makedirs(bbox_dir, exist_ok=True)
-        os.makedirs(cropped_dir, exist_ok=True)
+        # Create output directory if it doesn't exist
+        output_dir = os.path.join(app.root_path, 'detection_outputs')
+        os.makedirs(output_dir, exist_ok=True)
 
-        # Read and process the image
+        # Read the image
         image = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_COLOR)
         
-        # Load the YOLO model for detection
-        model = tf.keras.models.load_model('workflow1/best_model.h5')
-        
-        # Preprocess image for detection
-        input_size = (640, 640)  # Adjust based on your model's input size
-        processed_img = cv2.resize(image, input_size)
-        processed_img = processed_img / 255.0
-        processed_img = np.expand_dims(processed_img, axis=0)
+        # Load the YOLO model
+        model_path = os.path.join(app.root_path, 'workflow1', 'best.pt')
+        if not os.path.exists(model_path):
+            return jsonify({"error": "YOLO model not found"}), 500
+            
+        model = YOLO(model_path)
         
         # Perform detection
-        predictions = model.predict(processed_img)
+        results = model(image)
         
-        # Process predictions and draw bounding boxes
-        bbox_image = image.copy()
-        cropped_images = []
+        # Process results
         item_counts = {}
+        annotated_image = image.copy()
         
-        # Process each detection
-        for pred in predictions[0]:
-            confidence = pred[4]
-            if confidence > 0.5:  # Confidence threshold
-                x1, y1, x2, y2 = pred[:4]
-                class_id = int(pred[5])
+        for result in results:
+            boxes = result.boxes
+            for box in boxes:
+                # Get box coordinates
+                x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
                 
-                # Convert normalized coordinates to pixel coordinates
-                h, w = image.shape[:2]
-                x1, y1, x2, y2 = int(x1 * w), int(y1 * h), int(x2 * w), int(y2 * h)
+                # Get class and confidence
+                class_id = int(box.cls[0])
+                confidence = float(box.conf[0])
+                
+                # Get class name from model
+                class_name = result.names[class_id]
                 
                 # Draw bounding box
-                cv2.rectangle(bbox_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.rectangle(annotated_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 
-                # Crop the detected object
-                cropped = image[y1:y2, x1:x2]
-                if cropped.size > 0:
-                    cropped_images.append(cropped)
+                # Add label
+                label = f"{class_name} {confidence:.2f}"
+                cv2.putText(annotated_image, label, (x1, y1 - 10), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
                 
-                # Update item count
-                class_name = f"item_{class_id}"  # Replace with actual class names
+                # Update item counts
                 item_counts[class_name] = item_counts.get(class_name, 0) + 1
         
-        # Save the image with bounding boxes
+        # Save the annotated image
         timestamp = int(time.time())
-        bbox_path = os.path.join(bbox_dir, f'bbox_{timestamp}.jpg')
-        cv2.imwrite(bbox_path, bbox_image)
+        output_path = os.path.join(output_dir, f'detection_{timestamp}.jpg')
+        cv2.imwrite(output_path, annotated_image)
         
-        # Save cropped images with their labels
-        cropped_paths = []
-        for idx, cropped_img in enumerate(cropped_images):
-            cropped_path = os.path.join(cropped_dir, f'cropped_{timestamp}_{idx}.jpg')
-            cv2.imwrite(cropped_path, cropped_img)
-            cropped_paths.append(cropped_path)
-        
-        # Convert images to base64 for response
-        with open(bbox_path, 'rb') as img_file:
-            bbox_base64 = base64.b64encode(img_file.read()).decode('utf-8')
-        
-        cropped_base64 = []
-        for path in cropped_paths:
-            with open(path, 'rb') as img_file:
-                cropped_base64.append(base64.b64encode(img_file.read()).decode('utf-8'))
+        # Convert image to base64 for response
+        with open(output_path, 'rb') as img_file:
+            image_base64 = base64.b64encode(img_file.read()).decode('utf-8')
         
         return jsonify({
             "status": "success",
             "item_counts": item_counts,
-            "bbox_image": bbox_base64,
-            "cropped_images": cropped_base64,
-            "bbox_path": bbox_path,
-            "cropped_paths": cropped_paths
+            "annotated_image": image_base64,
+            "output_path": output_path
         })
         
     except Exception as e:

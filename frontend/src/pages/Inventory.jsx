@@ -12,6 +12,8 @@ const Inventory = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [detectedItems, setDetectedItems] = useState([]);
   const [cameraError, setCameraError] = useState(null);
+  const [processingError, setProcessingError] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -79,9 +81,58 @@ const Inventory = () => {
     });
   };
 
-  const handleProcess = () => {
-    setProcessedImages([...images]); // Store the current images
-    setShowData(true);
+  const processImage = async (imageFile) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', imageFile);
+
+      const response = await fetch('http://localhost:5000/api/detect_and_classify', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process image');
+      }
+
+      const data = await response.json();
+      return {
+        ...data,
+        originalPreview: URL.createObjectURL(imageFile),
+      };
+    } catch (error) {
+      console.error('Error processing image:', error);
+      throw error;
+    }
+  };
+
+  const handleProcess = async () => {
+    try {
+      setIsProcessing(true);
+      setProcessingError(null);
+      
+      const processedResults = await Promise.all(
+        images.map(async (image) => {
+          try {
+            return await processImage(image.file);
+          } catch (error) {
+            console.error(`Error processing image: ${error.message}`);
+            return null;
+          }
+        })
+      );
+
+      // Filter out any failed processing attempts
+      const validResults = processedResults.filter(result => result !== null);
+      
+      setProcessedImages(validResults);
+      setShowData(true);
+    } catch (error) {
+      setProcessingError('Failed to process images. Please try again.');
+      console.error('Error in handleProcess:', error);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const startCamera = async () => {
@@ -390,29 +441,22 @@ const Inventory = () => {
                   handleProcess();
                 }
               }}
+              disabled={isProcessing}
               className={`${
                 showData 
                   ? 'bg-gray-600 hover:bg-gray-700' 
                   : 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl'
               } text-white px-8 py-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 text-lg font-semibold flex items-center space-x-2 relative overflow-hidden group transition-all duration-300`}
-              animate={showData ? {
-                scale: [1, 1.1, 1],
-                transition: {
-                  duration: 1,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }
-              } : {
-                scale: [1, 1.1, 1],
-                transition: {
-                  duration: 1.2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  times: [0, 0.5, 1]
-                }
-              }}
             >
-              {showData ? (
+              {isProcessing ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Processing...</span>
+                </>
+              ) : showData ? (
                 <>
                   <svg
                     className="w-5 h-5"
@@ -433,23 +477,61 @@ const Inventory = () => {
                 <>
                   <span className="relative z-10">Process Images</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.3)_50%,transparent_75%,transparent_100%)] bg-[length:250%_250%] group-hover:bg-[position:100%_100%] transition-[background-position] duration-500" />
-                  <motion.div
-                    className="absolute inset-0 bg-white/20"
-                    animate={{
-                      opacity: [0, 0.5, 0],
-                      scale: [1, 1.2, 1],
-                    }}
-                    transition={{
-                      duration: 1.2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      times: [0, 0.5, 1]
-                    }}
-                  />
                 </>
               )}
             </motion.button>
+          </motion.div>
+        )}
+
+        {/* Detection Results */}
+        {showData && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-8"
+          >
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              Detection Results
+            </h2>
+            
+            {processingError && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <span className="block sm:inline">{processingError}</span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {processedImages.map((result, index) => (
+                <div key={index} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                  <div className="relative mb-4">
+                    <img
+                      src={`data:image/jpeg;base64,${result.annotated_image}`}
+                      alt={`Detection result ${index + 1}`}
+                      className="w-full h-64 object-cover rounded-lg shadow-lg"
+                    />
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Detected Items
+                    </h3>
+                    <div className="space-y-2">
+                      {Object.entries(result.item_counts).map(([item, count]) => (
+                        <div
+                          key={item}
+                          className="flex justify-between items-center bg-white dark:bg-gray-800 p-3 rounded-lg shadow-sm"
+                        >
+                          <span className="text-gray-900 dark:text-white">{item}</span>
+                          <span className="text-blue-600 dark:text-blue-400 font-medium">
+                            {count} units
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </motion.div>
         )}
 
@@ -503,68 +585,6 @@ const Inventory = () => {
               </motion.div>
             ))}
           </div>
-        )}
-
-        {/* JSON Data Display */}
-        {showData && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-8"
-          >
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-              Inventory Data
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Object.entries(ingredientsData.ingredients).map(([category, items], categoryIndex) => (
-                <div
-                  key={category}
-                  className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6"
-                >
-                  <div className="mb-6">
-                    {processedImages[categoryIndex] && (
-                      <div className="relative w-3/4 h-32 mx-auto rounded-xl overflow-hidden shadow-xl transform hover:scale-[1.02] transition-transform duration-200 group">
-                        <img
-                          src={processedImages[categoryIndex].preview}
-                          alt={`Category ${category} image`}
-                          className="w-full h-full object-cover brightness-100 contrast-100 group-hover:brightness-110 transition-all duration-300"
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-4">
-                    {items.map((item, index) => (
-                      <div
-                        key={index}
-                        className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm"
-                      >
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-medium text-gray-900 dark:text-white">
-                            {item.name}
-                          </span>
-                          <span className="text-sm text-gray-500 dark:text-gray-400">
-                            {item.quantity} units
-                          </span>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-full">
-                            <div
-                              className="h-2 bg-green-500 rounded-full"
-                              style={{ width: `${(item.freshness / 14) * 100}%` }}
-                            />
-                          </div>
-                          <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
-                            {item.freshness}/14
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
         )}
 
         {images.length === 0 && !showData && (
