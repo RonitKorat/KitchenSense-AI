@@ -38,3 +38,6 @@ backend/__pycache__/
 backend/instance/
 backend/*.pyc
 backend/*.sqlite3
+
+
+tf_env/

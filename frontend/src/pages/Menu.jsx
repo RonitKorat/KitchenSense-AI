@@ -26,7 +26,43 @@ const Menu = () => {
         throw new Error(data.error || 'Failed to generate menu');
       }
 
-      setMenuData(data.data);
+      // Process the menu data to ensure all required fields are present
+      const processedMenu = {
+        month: data.month,
+        year: data.year,
+        menu: {
+          special_dishes: data.menu.special_dishes.map(dish => ({
+            name: dish.name || 'Unnamed Dish',
+            description: dish.description || 'No description available',
+            price: dish.price || 0,
+            discount: dish.discount || '0%',
+            ingredients: (dish.ingredients || []).map(ing => ({
+              name: ing.charAt(0).toUpperCase() + ing.slice(1).toLowerCase(),
+              quantity: '100g' // Default quantity since API doesn't provide it
+            }))
+          })),
+          normal_dishes: data.menu.normal_dishes.map(dish => ({
+            name: dish.name || 'Unnamed Dish',
+            description: dish.description || 'No description available',
+            price: dish.price || 0,
+            ingredients: (dish.ingredients || []).map(ing => ({
+              name: ing.charAt(0).toUpperCase() + ing.slice(1).toLowerCase(),
+              quantity: '100g' // Default quantity since API doesn't provide it
+            }))
+          })),
+          new_dishes: data.menu.new_dishes.map(dish => ({
+            name: dish.name || 'Unnamed Dish',
+            description: dish.description || 'No description available',
+            price: dish.price || 0,
+            ingredients: (dish.ingredients || []).map(ing => ({
+              name: ing.charAt(0).toUpperCase() + ing.slice(1).toLowerCase(),
+              quantity: '100g' // Default quantity since API doesn't provide it
+            }))
+          }))
+        }
+      };
+
+      setMenuData(processedMenu);
     } catch (err) {
       setError(err.message);
       console.error('Menu generation error:', err);
@@ -145,7 +181,7 @@ const Menu = () => {
                         <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                           {dish.name}
                         </h3>
-                        <span className="text-sm text-red-600 dark:text-red-400 font-semibold">
+                        <span className="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 text-sm font-semibold rounded-full">
                           {dish.discount} OFF
                         </span>
                       </div>
@@ -156,24 +192,21 @@ const Menu = () => {
                         {dish.ingredients.map((ingredient, idx) => (
                           <span
                             key={idx}
-                            className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs rounded-full"
+                            className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs rounded-full font-medium"
                           >
-                            {ingredient.name} ({ingredient.quantity}g)
+                            {ingredient.name} ({ingredient.quantity})
                           </span>
                         ))}
                       </div>
                       <div className="flex justify-between items-center">
-                        <div>
+                        <div className="flex items-center space-x-2">
                           <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                            ${formatPrice(dish.price)}
+                            ${dish.price.toFixed(2)}
                           </span>
-                          <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
-                            Original: ${calculateOriginalPrice(dish.price, dish.discount)}
+                          <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
+                            ${(dish.price / (1 - parseInt(dish.discount) / 100)).toFixed(2)}
                           </span>
                         </div>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                          Profit: {dish.profit_margin}%
-                        </span>
                       </div>
                     </motion.div>
                   ))}
@@ -209,18 +242,15 @@ const Menu = () => {
                         {dish.ingredients.map((ingredient, idx) => (
                           <span
                             key={idx}
-                            className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded-full"
+                            className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded-full font-medium"
                           >
-                            {ingredient.name} ({ingredient.quantity}g)
+                            {ingredient.name} ({ingredient.quantity})
                           </span>
                         ))}
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                          ${formatPrice(dish.price)}
-                        </span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                          Profit: {dish.profit_margin}%
+                          ${dish.price.toFixed(2)}
                         </span>
                       </div>
                     </motion.div>
@@ -259,18 +289,15 @@ const Menu = () => {
                         {dish.ingredients.map((ingredient, idx) => (
                           <span
                             key={idx}
-                            className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full"
+                            className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full font-medium"
                           >
-                            {ingredient.name} ({ingredient.quantity}g)
+                            {ingredient.name} ({ingredient.quantity})
                           </span>
                         ))}
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                          ${formatPrice(dish.price)}
-                        </span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                          Profit: {dish.profit_margin}%
+                          ${dish.price.toFixed(2)}
                         </span>
                       </div>
                     </motion.div>

@@ -9,9 +9,9 @@
                     "apple",
                     "banana"
                 ],
-                "price": 4.99,
+                "price": 3.99,
                 "discount": "25%",
-                "description": "A refreshing smoothie using apples and bananas nearing expiration."
+                "description": "A refreshing smoothie to utilize soon-to-expire apples and bananas."
             },
             {
                 "name": "Cucumber & Tomato Salad",
@@ -19,100 +19,95 @@
                     "cucumber",
                     "tomato"
                 ],
-                "price": 5.49,
+                "price": 4.49,
                 "discount": "20%",
-                "description": "A light and healthy salad, perfect for a quick lunch or side dish."
+                "description": "A light and flavorful salad using cucumber and tomato."
             },
             {
-                "name": "Okra & Tomato Stew",
+                "name": "Okra and Tomato Stew",
                 "ingredients": [
                     "okra",
                     "tomato"
                 ],
                 "price": 6.99,
                 "discount": "15%",
-                "description": "A hearty and flavorful stew using okra and tomatoes."
+                "description": "A hearty and comforting stew using okra and tomato to minimize waste."
             },
             {
-                "name": "Roasted Potatoes with Oranges",
+                "name": "Roasted Patato and Apple Medley",
                 "ingredients": [
                     "patato",
-                    "oranges"
+                    "apple"
                 ],
-                "price": 7.49,
+                "price": 5.49,
                 "discount": "10%",
-                "description": "A unique dish pairing roasted potatoes with sweet and tangy oranges."
+                "description": "A savory-sweet side dish of roasted patatos and apples."
+            },
+            {
+                "name": "Orange & Cucumber Cooler",
+                "ingredients": [
+                    "oranges",
+                    "cucumber"
+                ],
+                "price": 4.99,
+                "discount": "30%",
+                "description": "A very refreshing drink to utilize soon-to-expire oranges and cucumbers."
             }
         ],
         "normal_dishes": [
             {
-                "name": "Classic Apple Pie",
+                "name": "Patato Pancakes",
                 "ingredients": [
-                    "apple"
+                    "patato"
                 ],
-                "price": 8.49,
-                "description": "A timeless dessert made with sweet apples."
+                "price": 7.99,
+                "description": "Classic patato pancakes, a customer favorite."
+            },
+            {
+                "name": "Tomato Soup",
+                "ingredients": [
+                    "tomato"
+                ],
+                "price": 5.99,
+                "description": "A comforting and classic tomato soup."
             },
             {
                 "name": "Banana Bread",
                 "ingredients": [
                     "banana"
                 ],
-                "price": 6.99,
-                "description": "Moist and flavorful banana bread, perfect for breakfast or a snack."
-            },
-            {
-                "name": "Greek Salad",
-                "ingredients": [
-                    "cucumber",
-                    "tomato"
-                ],
-                "price": 9.99,
-                "description": "A refreshing Greek salad with cucumbers and tomatoes."
-            },
-            {
-                "name": "Orange Juice",
-                "ingredients": [
-                    "oranges"
-                ],
-                "price": 4.49,
-                "description": "Freshly squeezed orange juice."
-            },
-            {
-                "name": "Fried Potatoes",
-                "ingredients": [
-                    "patato"
-                ],
-                "price": 5.99,
-                "description": "Crispy and golden fried potatoes."
+                "price": 3.49,
+                "description": "A popular banana bread, perfect for breakfast or a snack."
             }
         ],
         "new_dishes": [
             {
-                "name": "Spicy Okra Fries",
+                "name": "Spiced Apple & Patato Mash",
                 "ingredients": [
-                    "okra"
-                ],
-                "price": 7.99,
-                "description": "Crispy okra fries with a spicy seasoning."
-            },
-            {
-                "name": "Potato and Tomato Soup",
-                "ingredients": [
-                    "patato",
-                    "tomato"
+                    "apple",
+                    "patato"
                 ],
                 "price": 6.49,
-                "description": "A comforting and hearty soup with potatoes and tomatoes."
+                "description": "A unique blend of spiced apples and mashed patatos, offering a delightful taste experience."
             },
             {
-                "name": "Orange and Apple Compote",
+                "name": "Banana & Orange Salad",
                 "ingredients": [
-                    "oranges",
-                    "apple"
+                    "banana",
+                    "oranges"
                 ],
-                "price": 5.99,
-                "description": "A simple and delicious compote of oranges and apples."
+                "price": 5.49,
+                "description": "A refreshing salad combining the sweetness of bananas and oranges."
+            },
+            {
+                "name": "Cucumber, Tomato & Patato Salad",
+                "ingredients": [
+                    "cucumber",
+                    "tomato",
+                    "patato"
+                ],
+                "price": 7.49,
+                "description": "A healthy and colorful salad with a variety of flavors and textures."
             }
         ]
     }

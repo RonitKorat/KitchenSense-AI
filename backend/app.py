@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, Response
 from flask_pymongo import PyMongo
 from flask_cors import CORS
+from functools import wraps
 import subprocess
 import json
 import os
@@ -9,6 +10,11 @@ import time
 import pandas as pd
 import numpy as np
 from prophet import Prophet
+import base64
+import shutil
+import re
+import cv2
+import tensorflow as tf
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -18,6 +24,14 @@ app.config["MONGO_URI"] = "mongodb+srv://22BCE009:22BCE009@mongodb.qcyigcb.mongo
 mongo = PyMongo(app)
 
 db = mongo.db.users  # Reference to the users collection
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # For now, we'll just check if the user is authenticated
+        # In a real application, you would verify the session/token
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Import required modules for forecasting
 import pandas as pd
@@ -177,7 +191,7 @@ def generate_forecast():
         target_date = pd.to_datetime(custom_date)
 
         # Load dataset
-        df = pd.read_csv('workflow2/final_dataset.csv')
+        df = pd.read_csv('workflow2/realistic_dataset.csv')
         df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 
         # Define recipe ingredient usage (in grams per dish)
@@ -244,7 +258,7 @@ def compare_years():
         target_date = pd.to_datetime(custom_date)
 
         # Load dataset
-        df = pd.read_csv('workflow2/final_dataset.csv')
+        df = pd.read_csv('workflow2/realistic_dataset.csv')
         df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 
         # Define recipe ingredient usage (in grams per dish)
@@ -320,95 +334,51 @@ def compare_years():
 def predict_waste():
     try:
         data = request.get_json()
-        target_date = data.get('date')  # Expected format: "YYYY-MM-DD"
+        if not data or 'date' not in data:
+            return jsonify({'error': 'Date is required'}), 400
 
-        if not target_date:
-            return jsonify({"error": "Date is required in YYYY-MM-DD format"}), 400
-
-        # Get the absolute path to the script
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(current_dir, "workflow2", "waste_prediction.py")
+        target_date = data['date']
         
-        # Check if script exists
-        if not os.path.exists(script_path):
-            return jsonify({
-                "error": "Waste prediction script not found",
-                "path": script_path,
-                "current_dir": current_dir
-            }), 500
-
-        # Get Python executable path
-        python_executable = sys.executable
-
-        # Run the script with full paths
+        # Create a process with a timeout
         process = subprocess.Popen(
-            [python_executable, script_path, target_date],
+            ['python', 'workflow2/waste_prediction.py', target_date],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True,
-            cwd=current_dir,
-            bufsize=1,
-            universal_newlines=True
+            text=True
         )
 
-        # Wait for the process to complete with timeout
-        timeout = 120  # 120 seconds timeout
-        start_time = time.time()
-        
-        # Read output in real-time
-        while True:
-            if process.poll() is not None:
-                break
-                
-            if time.time() - start_time > timeout:
-                process.kill()
-                return jsonify({
-                    "error": "Waste prediction timed out",
-                    "details": "The process took too long to complete"
-                }), 500
-                
-            # Read output line by line
-            line = process.stdout.readline()
-            if line:
-                try:
-                    # Try to parse the line as JSON
-                    result = json.loads(line)
-                    if "error" in result:
-                        return jsonify(result), 500
-                    return jsonify(result)
-                except json.JSONDecodeError:
-                    continue
+        # Set a timeout of 5 minutes
+        timeout = 300  # 5 minutes in seconds
+        try:
+            stdout, stderr = process.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            return jsonify({'error': 'Prediction process timed out. Please try again.'}), 504
+
+        if process.returncode != 0:
+            return jsonify({'error': f'Script failed: {stderr}'}), 500
+
+        try:
+            # Try to parse the last line as JSON
+            lines = stdout.strip().split('\n')
+            last_line = lines[-1]
+            prediction_data = json.loads(last_line)
             
-            time.sleep(0.1)
-
-        # Get the final output
-        stdout, stderr = process.communicate()
-
-        if process.returncode == 0:
-            try:
-                result = json.loads(stdout)
-                if "error" in result:
-                    return jsonify(result), 500
-                return jsonify(result)
-            except json.JSONDecodeError as e:
-                return jsonify({
-                    "error": "Invalid JSON format returned from script",
-                    "details": stdout,
-                    "json_error": str(e)
-                }), 500
-        else:
+            # Save the prediction data to a file for verification
+            output_file = os.path.join('workflow2', 'waste_prediction.json')
+            with open(output_file, 'w') as f:
+                json.dump(prediction_data, f, indent=2)
+            
             return jsonify({
-                "error": "Failed to predict waste",
-                "details": stderr,
-                "return_code": process.returncode
-            }), 500
+                'data': prediction_data,
+                'message': 'Prediction completed successfully',
+                'file_path': output_file
+            })
+        except json.JSONDecodeError:
+            return jsonify({'error': 'Invalid JSON format returned from script'}), 500
 
     except Exception as e:
-        return jsonify({
-            "error": "Internal server error",
-            "details": str(e),
-            "type": type(e).__name__
-        }), 500
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/predict_optimal_stock', methods=['POST'])
 def predict_optimal_stock():
@@ -445,7 +415,7 @@ def predict_optimal_stock():
         )
 
         # Wait for the process to complete with timeout
-        timeout = 120  # 120 seconds timeout
+        timeout = 150  # 120 seconds timeout
         start_time = time.time()
         
         # Read output in real-time
@@ -501,6 +471,103 @@ def predict_optimal_stock():
             "details": str(e),
             "type": type(e).__name__
         }), 500
+
+@app.route('/api/detect_and_classify', methods=['POST'])
+def detect_and_classify():
+    try:
+        if 'image' not in request.files:
+            return jsonify({"error": "No image file provided"}), 400
+        
+        file = request.files['image']
+        if file.filename == '':
+            return jsonify({"error": "No selected file"}), 400
+
+        # Create output directories if they don't exist
+        bbox_dir = os.path.join(app.root_path, 'bbox_images')
+        cropped_dir = os.path.join(app.root_path, 'cropped_images')
+        os.makedirs(bbox_dir, exist_ok=True)
+        os.makedirs(cropped_dir, exist_ok=True)
+
+        # Read and process the image
+        image = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_COLOR)
+        
+        # Load the YOLO model for detection
+        model = tf.keras.models.load_model('workflow1/best_model.h5')
+        
+        # Preprocess image for detection
+        input_size = (640, 640)  # Adjust based on your model's input size
+        processed_img = cv2.resize(image, input_size)
+        processed_img = processed_img / 255.0
+        processed_img = np.expand_dims(processed_img, axis=0)
+        
+        # Perform detection
+        predictions = model.predict(processed_img)
+        
+        # Process predictions and draw bounding boxes
+        bbox_image = image.copy()
+        cropped_images = []
+        item_counts = {}
+        
+        # Process each detection
+        for pred in predictions[0]:
+            confidence = pred[4]
+            if confidence > 0.5:  # Confidence threshold
+                x1, y1, x2, y2 = pred[:4]
+                class_id = int(pred[5])
+                
+                # Convert normalized coordinates to pixel coordinates
+                h, w = image.shape[:2]
+                x1, y1, x2, y2 = int(x1 * w), int(y1 * h), int(x2 * w), int(y2 * h)
+                
+                # Draw bounding box
+                cv2.rectangle(bbox_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                
+                # Crop the detected object
+                cropped = image[y1:y2, x1:x2]
+                if cropped.size > 0:
+                    cropped_images.append(cropped)
+                
+                # Update item count
+                class_name = f"item_{class_id}"  # Replace with actual class names
+                item_counts[class_name] = item_counts.get(class_name, 0) + 1
+        
+        # Save the image with bounding boxes
+        timestamp = int(time.time())
+        bbox_path = os.path.join(bbox_dir, f'bbox_{timestamp}.jpg')
+        cv2.imwrite(bbox_path, bbox_image)
+        
+        # Save cropped images with their labels
+        cropped_paths = []
+        for idx, cropped_img in enumerate(cropped_images):
+            cropped_path = os.path.join(cropped_dir, f'cropped_{timestamp}_{idx}.jpg')
+            cv2.imwrite(cropped_path, cropped_img)
+            cropped_paths.append(cropped_path)
+        
+        # Convert images to base64 for response
+        with open(bbox_path, 'rb') as img_file:
+            bbox_base64 = base64.b64encode(img_file.read()).decode('utf-8')
+        
+        cropped_base64 = []
+        for path in cropped_paths:
+            with open(path, 'rb') as img_file:
+                cropped_base64.append(base64.b64encode(img_file.read()).decode('utf-8'))
+        
+        return jsonify({
+            "status": "success",
+            "item_counts": item_counts,
+            "bbox_image": bbox_base64,
+            "cropped_images": cropped_base64,
+            "bbox_path": bbox_path,
+            "cropped_paths": cropped_paths
+        })
+        
+    except Exception as e:
+        print(f"Error in detect_and_classify: {str(e)}")  # Add logging
+        return jsonify({"error": str(e)}), 500
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 if __name__ == "__main__":
     app.run(debug=True)

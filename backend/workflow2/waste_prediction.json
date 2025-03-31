@@ -1,0 +1,60 @@
+{
+  "data": {
+    "target_date": "2025-03-20",
+    "waste_predictions": {
+      "high_risk_ingredients": [
+        {
+          "name": "apple",
+          "predicted_waste": 2292,
+          "risk_level": "high",
+          "suggestion": "Prioritize apple usage in recipes; consider processing into applesauce or juice if nearing spoilage."
+        },
+        {
+          "name": "banana",
+          "predicted_waste": 1811,
+          "risk_level": "high",
+          "suggestion": "Use ripe bananas for smoothies, banana bread, or freeze for later use."
+        },
+        {
+          "name": "cucumber",
+          "predicted_waste": 1889,
+          "risk_level": "high",
+          "suggestion": "Utilize cucumbers in salads, sandwiches, or create pickled cucumbers for longer preservation."
+        },
+        {
+          "name": "okra",
+          "predicted_waste": 1575,
+          "risk_level": "medium",
+          "suggestion": "Prepare okra in batches and freeze any excess for future use in stews or gumbos."
+        },
+        {
+          "name": "oranges",
+          "predicted_waste": 2355,
+          "risk_level": "high",
+          "suggestion": "Juice oranges for immediate consumption or freeze the juice for later use; zest the peels for flavoring."
+        },
+        {
+          "name": "patato",
+          "predicted_waste": 2801,
+          "risk_level": "high",
+          "suggestion": "Cook and refrigerate or freeze potatoes for later use, such as mashed potatoes or potato salads."
+        },
+        {
+          "name": "tomato",
+          "predicted_waste": 1313,
+          "risk_level": "medium",
+          "suggestion": "Process tomatoes into sauce or soup for longer storage; consider canning or freezing excess tomatoes."
+        }
+      ],
+      "total_predicted_waste": 14036,
+      "waste_reduction_suggestions": [
+        "Implement a 'first in, first out' (FIFO) system for ingredient usage.",
+        "Monitor inventory levels daily to identify potential overstocking.",
+        "Adjust purchasing orders based on predicted consumption to avoid excess inventory.",
+        "Train staff on proper food storage techniques to extend shelf life.",
+        "Offer discounted prices on ingredients nearing their expiration date.",
+        "Donate excess ingredients to local food banks or shelters."
+      ]
+    }
+  }
+}
