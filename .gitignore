@@ -41,3 +41,4 @@ backend/*.sqlite3
 
 
 tf_env/
+backend/app.log

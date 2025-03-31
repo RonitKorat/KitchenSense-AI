@@ -3,9 +3,13 @@ import google.generativeai as genai
 import pandas as pd
 import json
 import time
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configure Gemini API key
-genai.configure(api_key="AIzaSyBeZR1UE57ipQIN0xgQOIuP1jNmucP13nU")
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Get the script's directory
 script_dir = os.path.dirname(os.path.abspath(__file__))

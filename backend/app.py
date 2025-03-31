@@ -15,12 +15,16 @@ import shutil
 import re
 import cv2
 from ultralytics import YOLO
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # MongoDB configuration
-app.config["MONGO_URI"] = "mongodb+srv://22BCE009:22BCE009@mongodb.qcyigcb.mongodb.net/hack_nu"
+app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 mongo = PyMongo(app)
 
 db = mongo.db.users  # Reference to the users collection

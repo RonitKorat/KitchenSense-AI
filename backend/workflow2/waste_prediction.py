@@ -7,9 +7,14 @@ import json
 import google.generativeai as genai
 from prophet import Prophet
 import sys
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configure Gemini API key
-genai.configure(api_key="AIzaSyBeZR1UE57ipQIN0xgQOIuP1jNmucP13nU")
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def predict_waste():
     try:
