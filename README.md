@@ -58,8 +58,8 @@ Are you looking to optimize inventory, reduce waste, and enhance efficiency in y
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/MeetAghara512/HackNUThon/tree/main  # Replace with your repo URL
-cd SmartKitchenAI
+git clone https://github.com/MeetAghara512/HackNUThon  # Replace with your repo URL
+cd HackNUThon
 ```
 
 ### 2️⃣ Backend Setup (Flask)
@@ -79,9 +79,9 @@ python app.py
 ### 3️⃣ Frontend Setup (React)
 
 ```bash
-cd client  # Navigate to the frontend directory
+cd frontend  # Navigate to the frontend directory
 npm install  # Install frontend dependencies
-npm start   # Start the React development server
+npm run dev   # Start the React development server
 ```
 
 ### 4️⃣ Configuration
