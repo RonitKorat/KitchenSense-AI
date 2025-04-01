@@ -30,7 +30,8 @@ Are you looking to optimize inventory, reduce waste, and enhance efficiency in y
 - 🍜 **Intelligent Menu Optimization**
   - **AI-Driven Recipe Recommendations**: Utilizes **historical consumption, waste predictions, and restaurant-specific data**.
   - **Cost Optimization**: Suggests **nearly spoiled ingredients** usage via **Gemini AI**.
-  - **Custom Dish Creation**: Generates new dish ideas using **Gemini API**.
+  - **Custom Dish Creation**: Generates new dish ideas using **Gemini API**, considering **previous day's waste prediction** and **sales data** to create sustainable and optimized menu items.
+
 
 - 📊 **Vision-Powered Waste Analysis & Reporting**
   - **Food Waste Classification**: Uses **YOLO** for waste identification.
