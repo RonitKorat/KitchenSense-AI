@@ -59,8 +59,8 @@ Are you looking to optimize inventory, reduce waste, and enhance efficiency in y
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/MeetAghara512/HackNUThon  # Replace with your repo URL
-cd HackNUThon
+git clone https://github.com/MeetAghara512/KitchenSense-AI  # Replace with your repo URL
+cd KitchenSense-AI
 ```
 
 ### 2️⃣ Backend Setup (Flask)
