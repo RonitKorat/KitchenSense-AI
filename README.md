@@ -1,5 +1,7 @@
 # 🚀 AI-Powered Smart Kitchen & Waste Minimizer
 
+demo : https://www.youtube.com/watch?v=NjlACPg2cNk
+
 Are you looking to optimize inventory, reduce waste, and enhance efficiency in your kitchen? **AI-Powered Smart Kitchen & Waste Minimizer** is your ultimate solution! Leveraging advanced **Computer Vision, AI, and Predictive Analytics**, this system helps restaurants and food businesses streamline operations, reduce food waste, and maximize profit.
 
 ---
