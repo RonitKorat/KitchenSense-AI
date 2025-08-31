@@ -50,7 +50,7 @@ Are you looking to optimize inventory, reduce waste, and enhance efficiency in y
 
 - **Backend**: Flask (Python)
 - **Frontend**: React (JavaScript), Tailwind CSS
-- **AI/ML**: Gemini API, YOLOv8, EfficientNetV2, Prophet, XGBoost, Linear Regression
+- **AI/ML**: Gemini API, YOLOv8, RestNet50, Prophet, XGBoost, Linear Regression
 - **Database**: Mongodb
 - **Runtime**: Node.js (for frontend development and additional tasks)
 
